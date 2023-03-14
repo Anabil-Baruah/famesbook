@@ -19,7 +19,7 @@ FamesBook is a full-stack social media web application that allows users to conn
 Clone the project
 
 ```bash
-  git clone https://link-to-project
+  git clone https://github.com/Anabil-Baruah/famesbook.git
 ```
 
 Go to the project directory
