@@ -1,0 +1,63 @@
+<%- include("includes/header") %>
+
+    <section>
+        <div class="gap gray-bg">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row" id="page-content">
+                            <div class="col-md-3">
+                                <%- include("includes/left-slidebar") %>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="central-meta">
+                                    <div class="groups">
+                                        <span><i class="fa fa-file-text-o"></i>Your Pages</span>
+                                    </div>
+                                    <ul class="liked-pages" id="all-pages">
+                                        <div class="row row-cols-lg-3 row-cols-md-2">
+                                            <!-- for (var a = 0; a < response.data.length; a++) {
+                                                var data = response.data[a]; -->
+                                            <% if(pages){ %>
+                                                <% pages.forEach((page)=>{ %>
+                                                    <div class="col border rounded my-1">
+
+                                                        <div class="card" style="width: 15rem;margin-right:0;">
+                                                            <a href="/pages/<%=page._id%>">
+                                                                <img src=/image/<%=page.coverPhoto %>
+                                                                class="card-img-top" alt="...">
+                                                                <div class="card-body">
+                                                                    <h5 class="card-title text-dark">
+                                                                        <%= page.name%>
+                                                                    </h5>
+                                                            </a>
+                                                            <p class="card-text page_text">
+                                                                <%= page.additionalInfo%>
+                                                            </p>
+
+                                                        </div>
+
+                                                    </div>
+                                        </div>
+                                        <% }) %>
+                                            <% } %>
+
+
+                                </div>
+                                </ul>
+                                <% if(pages.length===0){ %>
+                                    <h4 style="margin-left:5rem;"></i>You havent created any page yet</h4> <a
+                                        href="/create" style="margin-left:10rem;">(Create a page)</a>
+                                    <% } %>
+                                        <div id="no_page"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </section>
+
+
+    <%- include("includes/footer") %>

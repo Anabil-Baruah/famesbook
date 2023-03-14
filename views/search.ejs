@@ -1,0 +1,185 @@
+<%- include("includes/header")%>
+
+    <section>
+        <div class="gap gray-bg">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="offset-md-3 col-md-6">
+                        <div class="timeline-info">
+                            <ul class="nav nav-tabs">
+                                <li>
+                                    <a href="#people" data-toggle="tab" class="active btn btn-light">People</a>
+                                    <a href="#pages" data-toggle="tab" class="btn btn-light">Pages</a>
+                                    <a href="#groups" data-toggle="tab" class="btn btn-light">Groups</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row" id="page-contents">
+                            <div class="col-md-3">
+                                <%- include("includes/left-slidebar")%>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="central-meta">
+                                    <div class="frnds">
+                                        <div class="tab-content">
+                                            <div class="tab-pane active fade show" id="people">
+                                                <ul class="nearby-contct" id="search-results">
+                                                    <% if(users){%>
+                                                        <% users.forEach((User)=>{ %>
+                                                            <% let isFriend = false %>
+                                                            <li>
+                                                                <div class="nearly-pepls">
+                                                                    <figure>
+                                                                        <a href="/user/<%= User._id%>">
+                                                                            <img src="/image/<%= User.profilePhoto%>">
+                                                                        </a>
+                                                                    </figure>
+                                                                    <div class="pepl-info">
+                                                                        <h4>
+                                                                            <a href="/user/<%= User._id%>">
+                                                                                <%=User.name%>
+                                                                            </a>
+                                                                        </h4>
+                                    <% let userFound = user.friends.find(frnd=>frnd._id.toString()===User._id.toString())%>
+                                    <% if(userFound){%>
+                                        <% isFriend = true %>
+                                    <% } %>
+                                        
+                                    <% if(isFriend){%>
+                                        <a href="javascript:void(0);" data-id= <%= User._id%> onclick="toggleFriendRequest(this);" class="add-butn btn-unfriend">Unfriend</a>
+                                    <% }else{ %>
+                                        <a href="javascript:void(0);" data-id= <%= User._id%> onclick="toggleFriendRequest(this);" class="add-butn">Friend</a>
+                                    <% } %>
+                                    
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                            <% }) %>
+                                                                <% } %>
+                                                </ul>
+                                                <% if(users=="" ){%>
+                                                    <h6 style="margin-left: 13rem;">No users found</h6>
+                                                    <%}%>
+                                            </div>
+
+                                            <% let isFollow = false %>
+                                        
+                                            <div class="tab-pane active fade" id="pages">
+                                                <ul class="nearby-contct" id="search-result-pages">
+                                                    <% if(pages){%>
+                                                        <% pages.forEach((page)=>{ %>
+                                                            <li>
+                                                                <div class="nearly-pepls">
+                                                                    <figure>
+                                                                        <a href="/pages/<%= page._id%>">
+                                                                            <img src="/image/<%= page.coverPhoto%>">
+                                                                        </a>
+                                                                    </figure>
+
+                                                                    <div class="pepl-info">
+                                                                        <h4>
+                                                                            <a href="/pages/<%= page._id%>">
+                                                                                <%=page.name%>
+                                                                            </a>
+                                                                        </h4>
+
+                                                                        <% user.pages.forEach((userPage)=>{ %>
+                                                                        <%  if(page._id.toString() === userPage._id.toString()){ %>
+                                                                        <% isFollow = true %>
+                                                                        <% } %>
+                                                                        <% }) %>
+
+                                                                        
+                                                                        <% if(isFollow == false){%>
+                                                                        <a href="javascript:void(0);" id="pageFollow" data-id="<%= page._id%>" onclick="toggleFollowPage(this);" class="add-butn">Follow</a>
+                                                                        <% }else{ %>
+                                                                            <a href="javascript:void(0);" id="pageUnfollow" data-id="<%= page._id%>" onclick="toggleFollowPage(this);" class="add-butn btn-unfriend">Unfollow</a>
+                                                                        <% } %>
+
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                            <% }) %>
+                                                                <% } %>
+                                                </ul>
+                                                <% if(pages=="" ){%>
+                                                    <h6 style="margin-left: 13rem;">No Pages found</h6>
+                                                    <%}%>
+                                            </div>
+                                            
+                                            <div class="tab-pane active fade" id="groups">
+                                                <ul class="nearby-contct" id="search-result-groups">
+                                                    <% if(groups){%>
+                                                        <% groups.forEach((group)=>{ %>
+                                                            <% isFollow = false %>
+                                                            <li>
+                                                                <div class="nearly-pepls">
+                                                                    <figure>
+                                                                        <a href="/groups/<%= group._id%>">
+                                                                            <img src="/image/<%= group.coverPhoto%>">
+                                                                        </a>
+                                                                    </figure>
+
+                                                                    <div class="pepl-info">
+                                                                        <h4>
+                                                                            <a href="/groups/<%= group._id%>">
+                                                                                <%=group.name%>
+                                                                            </a>
+                                                                        </h4>
+
+                                                                        <span> Private group </span>
+                                                                        <em>
+                                                                            <%= group.members.length %> Members
+                                                                        </em>
+
+                                                                        <% user.groups.forEach((userGroup)=>{ %>
+                                                                        <%  if(group._id.toString() === userGroup._id.toString()){ %>
+                                                                        <% isFollow = true %>
+                                                                        <% } %>
+                                                                        <% }) %>
+
+
+                                                                        <% if(isFollow === true){%>
+                                                                            <a href="javascript:void(0);" data-id="<%= group._id%>"onclick="toggleJoinGroup(this);" class="add-butn btn-unfriend">Leave</a>
+                                                                        <% }else{ %>
+                                                                            <a href="javascript:void(0);" data-id="<%= group._id%>"onclick="toggleJoinGroup(this);" class="add-butn">Join</a>
+                                                                        <% } %>
+
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                            <% }) %>
+                                                                <% } %>
+
+                                                </ul>
+                                                <% if(groups=="" ){%>
+                                                    <h6 style="margin-left: 13rem;">No groups found</h6>
+                                                    <%}%>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+
+
+
+    </script>
+
+    <%- include("includes/footer")%>
+
+
+
+    

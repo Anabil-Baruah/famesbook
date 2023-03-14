@@ -1,0 +1,114 @@
+<%- include("includes/header") %>
+    <section>
+        <div class="feature-photo">
+            <figure style="margin:2rem; padding:0rem;">
+                <img id="page-cover-photo" src="/image/<%=page.coverPhoto%>">
+            </figure>
+
+
+
+            <div class="add-btn">
+                <span style="color:black; margin-top:1rem;" id="page-likes"></span>
+                <!-- <a href="javascript:void(0);" onclick="toggleLikePage();" id="btn-toggle-like">Like</a> -->
+
+                <% if(isFollow === false){%>
+                    <a href="javascript:void(0);" id="btn-toggle-like" data-id="<%= page._id%>" onclick="toggleFollowPage(this);" class="add-butn">Follow</a>
+                    <% }else{ %>
+                        <a href="javascript:void(0);" id="btn-toggle-like" data-id="<%= page._id%>" onclick="toggleFollowPage(this);" class="add-butn btn-unfriend">Unfollow</a>
+                    <% } %>
+            </div>
+
+
+
+            <div class="container-fluid">
+                <div class="row merged">
+                    <div class="col-lg-10 col-sm-9">
+                        <div class="timeline-info">
+                            <ul>
+                                <li class="admin-name">
+                                    <h5 style="padding: 25px;" id="page-name"><%= page.name %></h5>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="gap gray-bg">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row" id="page-contents">
+                            <div class="col-md-3">
+                                <%- include("includes/left-slidebar") %>
+                            </div>
+                            <div class="col-md-7">
+                                <div id="add-post-box">
+                                    <div class="central-meta">
+                                        <div class="new-position">
+                                            <figure>
+                                                <img style="width:60px;height:60px;"
+                                                    src="/image/<%= user.profilePhoto%>">
+                                            </figure>
+                                            <div class="newpst-input">
+                                                <form id="form-add-post" onsubmit="return doPost(this)">
+                                                    <input name="type" type="hidden" value="post">
+                                                    <textarea rows="2" name="caption"
+                                                        placeholder="write something "></textarea>
+                                                    <div class="attachments">
+                                                        <ul>
+                                                            <li>
+                                                                <div class="central-meta item" id="sharePostPreview"
+                                                                    style="display:none;">
+
+                                                                </div>
+                                                            </li>
+                                                            <li>
+                                                                <img id="post-img-preview" name="postImage"
+                                                                    style="display:none;">
+                                                            </li>
+                                                            <li>
+                                                                <video id="post-video-preview" controls
+                                                                    style="display:none"></video>
+                                                            </li>
+                                                            <li>
+                                                                <i class="fa fa-image"></i>
+                                                                <label class="fileContainer">
+                                                                    <input type="file" name="files" accept="image/*"
+                                                                        onchange="previewPostImage(this);">
+                                                                </label>
+                                                            </li>
+                                                            <li>
+                                                                <i class="fa fa-video-camera"></i>
+                                                                <label class="fileContainer">
+                                                                    <input type="file" name="files" accept="video/*"
+                                                                        onchange="previewPostVideo(this);">
+                                                                </label>
+                                                            </li>
+                                                            <li>
+                                                                <button type="submit">Post</button>
+                                                            </li>
+                                                        </ul>
+
+                                                    </div>
+                                                </form>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                                <div class="loadMore" id="newsfeed">No content</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+<%- include("includes/footer") %>

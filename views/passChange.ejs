@@ -1,0 +1,101 @@
+<%- include("includes/header") %>
+    <section>
+        <div class="gap gray-bg">
+            <div class="container-fluid">
+                <div class="row">
+                    
+                    <div class="col-md-12">
+                        <div class="row" id="page-contents">
+                            <div class="col-md-3">
+                                <%- include("includes/left-slidebar")%>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="central-meta">
+                                    <div class="editing-interest">
+                                        <h5 class="f-title">
+                                            <i class="fa-solid fa-gear"></i> Change password
+                                        </h5>
+                                        <% if(message){%>
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                            <strong> <%= message.message%> </strong>
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                          </div>
+                                          <% } %>
+                                        <div class="passChange">
+                                            <img id="imageId" src="/settings/image/<%=user.profilePhoto%>"
+                                                style="width: 12rem; height:12rem; object-fit:cover; border-radius:50%;">
+                                            <h5>Enter your Password</h5><br>
+                                            <div class="form-group" style="padding:  0 2rem 0 2rem;">
+                                                <form id="form" action='/settings/passChange' method="post"
+                                                    enctype="multipart/form-data">
+                                                    <input type="text" class="password" id="password" name="prevPass" />
+                                                    <input type="hidden" id="accessToken" value="<%=user.accessToken%>"
+                                                        name="accessToken">
+                                                    <label class="control-label"></label>
+                                                    <i class="mtrl-select"></i>
+                                                    <button type="submit" class="butn">Submit</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        
+        document.getElementById('form').addEventListener('submit', function (event) {
+            event.preventDefault()
+
+            var ajax = new XMLHttpRequest();
+
+            ajax.open("POST", this.action, true);
+
+            ajax.onreadystatechange = function () {
+                if (this.status == 200 && this.readyState == 4) {
+                    var response = JSON.parse(this.responseText)
+                    console.log(response);
+
+                    if (response.status == "success") {
+                        var html = "";
+
+                        html += `<h5>Enter new password</h5><br>
+                        <div class="form-group"style="padding:  0 1.5rem 0 1.5rem;">
+                            <form method="post" action="/settings/confirmPassChange">
+                                <div class="form-group">
+                                <input type="password" class="password" name="newPass" />
+                                <label class="control-label">New password</label>
+                                <i class="mtrl-select"></i>
+                                </div>
+                                <div class="form-group">
+                                <input type="password" class="password" name="confPass" />
+                                <label class="control-label">Confirm password</label>
+                                <i class="mtrl-select"></i>
+                                </div>
+                                <button name="submit" class="butn">Submit</button>
+                            </form>
+                        </div>`
+                        document.querySelector(".passChange").innerHTML = html
+                    } else {
+                        alert(response.message)
+                        document.querySelector('.password').value = "";
+                    }
+
+                }
+            }
+            let formData = new FormData(this);
+            ajax.setRequestHeader("Content-Type", "application/json; charset=utf-8");
+            // ajax.send(JSON.stringify(formData));
+            ajax.send(JSON.stringify({ accessToken: document.getElementById('accessToken').value, prevPass: document.getElementById('password').value }));
+            //ajax.send(formData);
+
+        })
+
+    </script>
+
+    <%- include("includes/footer") %>

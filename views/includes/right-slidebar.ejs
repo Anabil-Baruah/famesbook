@@ -1,0 +1,32 @@
+<aside class="sidebar static">
+    <div class="widget">
+        <h4 class="widget-title">Suggestions</h4>
+        <ul class="new-pepl">
+            <%suggestions.forEach((suggestion)=>{%>
+                <li>
+                    <div class="suggestions">
+                        <div class="main">
+                            <a href="/user/<%=suggestion._id%>">
+                                <img src="<%=baseURL%>/image/<%= suggestion.profilePhoto%>" alt=""
+                                    style="width:34px; height:34px;border:2px solid #002afe; object-fit:cover;max-width:none;"></a>
+                            <span>
+                                <%= suggestion.name%>
+                            </span>
+                        </div></a>
+
+                        <button data-id="<%=suggestion._id%>" onclick="toggleFriendRequest2(this);"
+                            style=" background-color:blue;">Friend</button>
+
+                        <!-- <a href="javascript:void(0);" data-id=  onclick="toggleFriendRequest(this);" class="add-butn btn-unfriend">Unfriend</a> -->
+
+                    </div>
+                </li>
+                <%})%>
+        </ul>
+        <div id="my-pages"></div>
+    </div>
+</aside>
+
+<script>
+
+</script>

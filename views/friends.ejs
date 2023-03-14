@@ -1,0 +1,137 @@
+<%- include("includes/header")%>
+
+<section>
+    <div class="gap gray-bg">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row" id="page-contents">
+                        <div class="col-md-3">
+                            <%- include("includes/left-slidebar") %> 
+                        </div>
+                        <div class="col-md-6">
+                            <div class="cenral-meta"> <h5>New request</h5>
+                                <div class="newFriends">
+                                    <ul class="nearby-contct" id="friends">
+                                        <% if(newRequest.length !== 0){ %>
+                                            <% newRequest.forEach((req)=>{ %>
+                                                <li>
+                                                    <div class="nearly-pepls">
+                                                        <figure>
+                                                            <a href="/user/'+data._id+'">
+                                                                <img style ="height:3rem; width:3rem; border-radius:50%;" src="/friends/image/<%=req.profilePhoto%>">
+                                                            </a>
+                                                        </figure>
+                                                        <div class="pepl-info">
+                                                            <h4>
+                                                               <a href="/user/<%= req._id %>"><%= req.name %></a>
+                                                            </h4>
+                                                            <!-- if(!data.sentByMe && data.status=="Pending"){ -->
+                                                                <a href="javascript:void(0);" data-id=<%= req._id %> onclick="doAccept(this)" class="add-butn more-action">Accept</a>
+                                                            <!-- } -->
+                                                            <a href="javascript:void(0);" data-id=<%= req._id %> onclick="rejectFriendRequest(this)" class="add-butn btn-unfriend">Reject</a>
+                                                        </div>
+                                                        </div>
+                                                </li>
+                                            <% }) %>
+                                        <% }else{ %>
+                                            <li>
+                                                <div class="nearly-pepls">
+                                                    No latest request
+                                                </div>
+                                            </li>
+                                        <%}%>
+                                    </ul>
+                                </div>
+                               
+                                <div class="frnds">
+                                    <div class="tab-content">
+                                        <div class="tab-pane active fade show" id="frends">
+                                            <h5 style="margin: 2rem 0 0 0;">Friends</h5>
+                                            <ul class="nearby-contct" id="friends">
+                                                <% if(friends.length !== 0){ %>
+                                                    <% friends.forEach((friend)=>{ %>
+                                                        <li>
+                                                            <div class="nearly-pepls">
+                                                                <figure>
+                                                                    <a href="/user/<%=friend._id%>">
+                                                                        <img style ="height:3rem; width:3rem; border-radius:50%;" src="<%=baseURL%>/image/<%=friend.profilePhoto%>">
+                                                                    </a>
+                                                                </figure>
+                                                                <div class="pepl-info">
+                                                                    <h4>
+                                                                       <a href="/user/<%= friend._id %>"><%= friend.name %></a>
+                                                                    </h4>
+                                                                    <!-- if(!data.sentByMe && data.status=="Pending"){
+                                                                        <a href="javascript:void(0);" data-id="'+data._id+'" onclick="doAccept(this)" class="add-butn more-action">Accept</a>
+                                                                    }
+                                                                    <a href="javascript:void(0);" data-id="'+data._id+'" onclick="doUnfriend(this)" class="add-butn btn-unfriend">Unfriend</a> -->
+                                                                </div>
+                                                                </div>
+                                                        </li>
+                                                    <% }) %>
+                                                <% }else{ %>
+                                                    <li>
+                                                        <div class="nearly-pepls">
+                                                            No Friends to display
+                                                        </div>
+                                                    </li>
+                                                <%}%>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <%- include('includes/right-slidebar', {suggestions})%>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function doAccept(self){
+       var _id = self.getAttribute('data-id')
+       const data = { _id }
+
+       $.ajax({
+            url:`${baseURL}/friends/acceptRequest`,
+            method:'POST',
+            data: JSON.stringify(data),
+            contentType:'application/json',
+            success:function(response){
+                if(response.status == "Accepted"){
+                    self.remove()
+                    document.querySelector('.btn-unfriend').remove()
+                }
+                if(response.status == "error"){
+                    alert(response.message)
+                }
+            }
+       })
+    }
+
+    function rejectFriendRequest(self){
+        var _id = self.getAttribute('data-id')
+        const data = { _id }
+
+       $.ajax({
+            url:`${baseURL}/friends/rejectRequest`,
+            method:'POST',
+            data: JSON.stringify(data),
+            contentType:'application/json',
+            success:function(response){
+                if(response.status == "Rejected"){
+                    self.remove()
+                    
+                }
+            }
+       })
+    }
+</script>
+
+<%- include("includes/footer")%>

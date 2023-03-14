@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="CSS/main.min.css">
+    <link rel="stylesheet" href="CSS/style.css">
+    <link rel="stylesheet" href="CSS/color.css">
+    <link rel="stylesheet" href="CSS/responsive.css">
+</head>
+
+<body>
+    <div class="theme-layout">
+        <div class="container-fluid pdng0">
+            <div class="row merged">
+                <div class="offset-md-3 col-md-6">
+                    <div class="login-reg-bg">
+                        <div class="log-reg-area sign">
+                            <h2 class="log-title">Login</h2>
+                            <form action="/login" method="post">
+                                <div class="form-group">
+                                    <input type="text" name="email">
+                                    <label class="control-label">Email</label>
+                                    <i class="mtrl-select"></i>
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" required name="password">
+                                    <label class="control-label">Password</label>
+                                    <i class="mtrl-select"></i>
+                                </div>
+                                <a href="/signUp">Dont have account?</a>
+                                <div class="submit-btns">
+                                    <button class="mtr-btn login" name="submit"
+                                        type="submit"><span>Login</span></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<!-- <script>
+    function doLogin(form) {
+        form.submit.setAttribute('disable', 'disable');
+        form.submit.innerHTML = "<span>Loading...</span>"
+        var ajax = new XMLHttpRequest();
+        ajax.open('POST', '/login', true);
+
+        ajax.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                form.submit.removeAttribute('disable');
+                form.submit.innerHTML = "<span>Login</span>"
+
+                var response = JSON.parse(this.responseText);
+                console.log(response)
+
+                if (response.status == "success") {
+                    var accessToken = response.accessToken;
+                    localStorage.setItem('accessToken', accessToken);
+                    localStorage.setItem('userId', response._id)
+                    if (response.profileImage == '') {
+                        window.location.href = "/updateProfile";
+                    } else {
+                        window.location.href = '/';
+                    }
+                } else {
+                    alert(response.message)
+                }
+            }
+        };
+        ajax.send(new FormData(form));
+        return false;
+    }
+</script> -->
+
+</html>

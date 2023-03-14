@@ -1,0 +1,125 @@
+<%- include('includes/header')%>
+
+    <section>
+        <div class="feature-photo">
+            <form action="/settings/uploadCoverPhoto/<%= user._id %>" method="post" id="form-cover-photo"
+                class="edit-photo" enctype="multipart/form-data">
+                <label class="fileContainer">
+                    Edit cover photo
+                    <i class="fa-solid fa-pencil"></i>
+                    <input style="display:none" type="file" accept="image/*" name="coverPhoto" id="coverPicInput"
+                        required>
+                </label>
+            </form>
+            <figure>
+                <img style="width:100%; height:700px; object-fit:cover;" class="cover-photo" id="cover-photo"
+                    src="/settings/image/<%=user.coverPhoto%>" alt="public">
+            </figure>
+
+            <div class="container-fluid">
+                <div class="row merged">
+                    <div class="col-md-2">
+                        <div class="user-avatar">
+                            <figure>
+                                <img class="profile-image" src="/settings/image/<%=user.profilePhoto%>"
+                                    id="profile-image" style="width: 100%; height:150px;object-fit:cover;"></img>
+                                <form action="/settings/uploadProfileImg/<%= user._id %>" method="post"
+                                    id="form-upload-image" class="edit-photo" enctype="multipart/form-data">
+
+                                    <label class="fileContainer">
+                                        Edit
+                                        <i class="fa-solid fa-pencil"></i>
+                                        <input type="file" accept="image/*" name="profileImage" id="profilePicInput"
+                                            required>
+                                    </label>
+                                </form>
+                            </figure>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <div class="timeline-info">
+                            <ul>
+                                <li class="admin-name">
+                                    <h5 class="user-name" style="padding-top: 20px;padding-bottom:20px;"></h5>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const coverPicInput = document.getElementById('coverPicInput');
+        coverPicInput.addEventListener('change', () => {
+            document.getElementById('form-cover-photo').submit()
+        })
+        const profilePicInput = document.getElementById('profilePicInput')
+        profilePicInput.addEventListener('change', () => {
+            document.getElementById('form-upload-image').submit()
+        })
+    </script>
+
+    <section>
+        <div class="gap gray-bg">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row" id="page-contents">
+                            <div class="col-md-3">
+                            </div>
+                            <div class="col-md-6">
+                                <div class="central-meta">
+                                    <div class="editing-info">
+                                        <h5 class="f-title">
+                                            <i class="ti-info-alt"></i>
+                                            Update Profile
+                                        </h5>
+                                        <form action="/settings/updateInfo/<%= user._id %>" method="post">
+                                            <div class="form-group">
+                                                <input type="text" class="name" name="name" value="<%= user.name %>"/>
+                                                <label class="control-label">Full Name</label>
+                                                <i class="mtrl-select"></i>
+                                            </div>
+                                            <br><br>
+                                            <div class="form-group">
+                                                <input type="email" class="email" name="email"value="<%= user.email %>" />
+                                                <label class="control-label">Email</label>
+                                                <i class="mtrl-select"></i>
+                                            </div>
+                                            <br><br>
+                                            <div class="form-group">
+                                                <input type="text" class="dob" name="dob" value="<%= user.dob %>"/>
+                                                <label class="control-label">Date of Birth (DD/MM/YYYY)</label>
+                                                <i class="mtrl-select"></i>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="text" class="city" name="city" value="<%= user.city %>"/>
+                                                <label class="control-label">City</label>
+                                                <i class="mtrl-select"></i>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="text" class="country" name="country" value="<%= user.country %>"/>
+                                                <label class="control-label">Country</label>
+                                                <i class="mtrl-select"></i>
+                                            </div>
+                                            <div class="form-group">
+                                                <textarea type="text" class="aboutMe" name="aboutMe"><%= user.aboutMe %></textarea>
+                                                <label class="control-label">About Me</label>
+                                                <i class="mtrl-select"></i>
+                                            </div>
+                                            <button type="submit" class="mtr-btn">
+                                                <span>Save</span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <%- include('includes/footer')%>

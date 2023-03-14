@@ -1,0 +1,63 @@
+<%- include("includes/header") %>
+    <section>
+        <div class="gap gray-bg">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row" id="page-contents">
+                            <div class="col-md-3">
+                                <%- include("includes/left-slidebar") %>
+                            </div>
+                            <div class="col-md-7">
+                                <div class="central-meta">
+                                    <div class="editing-interests">
+                                        <h5 class="f-title"><i class="ti-bell"></i>All groups</h5>
+                                        <div class="notifications-box">
+                                            <ul id="all-groups">
+                                                <% if(groups){ %>
+                                                    <% groups.forEach((group)=>{ %>
+                                                        <li style="margin-top:1.5rem; list-style:none;">
+                                                            <div class="nearly-pepls">
+                                                                <figure>
+                                                                    <a href="/groups/<%= group._id %>">
+                                                                        <img src=/image/<%= group.coverPhoto %>
+                                                                            style="width:45px; height:45px; object-fit:cover;">
+                                                                    </a>
+                                                                </figure>
+        
+                                                                <div class="pepl-info">
+                                                                    <h4>
+                                                                        <a href="/groups/<%=group._id %>"><%=group.name%></a>
+                                                                    </h4>
+                                                                    <span>Private group</span>
+                                                                    <em><%= groups.length %> Members</em>
+                                                                    <!-- if(isMember){
+                                                                    <a href="javascript:void(0);" data-id="'+data._id+'"
+                                                                        onclick="toggleJoinGroup(this);"
+                                                                        class="add-butn btn-unfriend">Leave</a>
+                                                                    }else{
+                                                                    <a href="javascript:void(0);" data-id="'+data._id+'"
+                                                                        onclick="toggleJoinGroup(this);"
+                                                                        class="add-butn">Join</a>
+                                                                    } -->
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    <% }) %>
+                                                <% } %>
+                                            </ul>
+                                            <% if(groups.length === 0){ %>
+                                                <h4 style="margin-left:5rem;"></i>You havent joined any group yet</h4><a href="/create"><p style="margin-left:10rem;">(Create a group) </p></a>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <%- include("includes/footer") %>

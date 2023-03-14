@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="CSS/main.min.css">
+    <!-- <link rel="stylesheet" href="/public/CSS/main.min.css"> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="/CSS/style.css">
+    <link rel="stylesheet" href="CSS/color.css">
+    <link rel="stylesheet" href="CSS/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+        integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
+        integrity="sha512-wn6I1fllKjXyREr3f56Gd6mPbCXiRjKwvj5mC1QlODsi5wuX2xbmyb6wekG6UzgogAs0wm/tC0c6pK/V6PXeLw=="
+        crossorigin="anonymous" />
+
+</head>
+
+<body>
+    <div class="theme-layout">
+        <div class="topbar stick">
+            <div class="logo">
+                <a href="/">
+                    <img src="/public/public/img/FBlogo.png">
+                </a>
+            </div>
+
+            <div class="top-area">
+                <ul class="main-menu" id="main-menu">
+                    <li>
+                        <a href="/"><i class="fa-solid fa-house"></i></a>
+                    </li>`
+                    <li>
+                        <a href="/groups"><i class="fa-solid fa-user-group"></i></a>
+                    </li>
+                    <li>
+                        <a href="/pages"><i class="fa-solid fa-heart"></i></a>
+                    </li>
+                    <li>
+                        <a href="/user"><i class="fa-solid fa-circle-user"></i></a>
+                    </li>
+
+                </ul>
+                <ul class="setting-area">
+                    <li>
+                        <a style="padding:1rem; margin-top:1rem;" href="ti-search">
+                            <i class="fa-solid fa-magnifying-glass"
+                                style="color:black;font-size:1.4rem; font-weight:bold;"></i>
+                        </a>
+
+                        <div class="searched ">
+                            <form onsubmit="return false" class="form-search">
+                                <input type="text" placeholder="Search Friends, Pages or Groups">
+                                <button data-ripple type="button" onclick="onSearch(this);">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
+        <script>
+            function onSearch(button) {
+                window.location.href = "/search/" + button.previousElementSibling.value;
+            }    
+            
+            var baseURL = "http://localhost:3000"
+        </script>

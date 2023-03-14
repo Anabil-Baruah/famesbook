@@ -1,0 +1,53 @@
+<%- include("includes/header")%>
+<section>
+    <div class="gap gray-bg">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row" id="page-contents">
+                        <div class="col-md-3">
+                            <%- include("includes/left-slidebar")%>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="central-meta">
+                                <div class="editing-interest">
+                                    <h5 class="f-title">
+                                        <i class="ti-bell"></i> All Notifications
+                                    </h5>
+                                    <div class="notification-box">
+                                        <ul id="all-notifications">
+                                            <% if(notifications){ %>
+                                                <% notifications.forEach((notification)=>{ %>
+                                                    <li>
+                                                        <figure><a href="/user/'+data._id+'"><img src="<%=baseURL%>/image/<%=notification.profilePhoto%>" style="width:45px; height:45px; object-fit:cover;"></a></figure>
+                                                        <div class="notifi-meta">
+                                                            
+                                                            <p><%= notification.content%></p>
+                                         
+                                                            <span><%= notification.createdAt%></span>
+                                                            <div class="nearly-pepls">
+                                                            <% if(notification.type === "group_join_request"){%>
+                                                                <% if(notification.status == "Pending"){%>
+                                                                <a href="javascript:void(0);" data-id="'+data._id+'"data-groupId="<%= notification.groupId%>" data-userId="<%= notification.userId%>" onclick="rejectRequestJoinGroup(this);" class="add-butn btn-unfriend" style="position:relative; left:5px;">Reject</a>
+                                                               
+                                                                <a href="javascript:void(0);" data-id="'+data._id+'"data-groupId="<%= notification.groupId%>" data-userId="<%= notification.userId%>" onclick="acceptRequestJoinGroup(this);" class="add-butn" style="position:relative;">Accept</a>
+                                                                <%}%>
+                                                            </div>
+                                                            <%}%>
+                                                        </div>
+                                                    </li>
+                                                <% }) %>
+                                            <% } %>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<%- include("includes/footer")%>
