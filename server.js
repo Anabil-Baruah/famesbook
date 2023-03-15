@@ -5,6 +5,7 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const app = express()
 require('dotenv').config()
+const port = process.env.PORT || 3000
 mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -60,6 +61,6 @@ app.use('/user', require('./routes/getUserProfile'))
 app.use('/search', require('./routes/search'))
 
 app.set('view engine', 'ejs');
-app.listen(3000, () => {
+app.listen(port, () => {
     console.log("server started")
 })

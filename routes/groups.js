@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const user = require('../models/users')
 const post = require('../models/posts')
 const { auth } = require('../auth')
+const { baseURL } = require('../auth')
 const path = require('path');
 const crypto = require('crypto');
 const { GridFsStorage } = require('multer-gridfs-storage');
@@ -76,7 +77,7 @@ router.route('/:id')
             isJoin = true
         }
 
-        res.render('viewGroup', { group: groupFound, user: userFound, userAccepted, isJoin })
+        res.render('viewGroup', { group: groupFound, user: userFound, userAccepted, isJoin, baseURL })
     })
 
 router.route('/toggleJoinGroup')
@@ -116,7 +117,14 @@ router.route('/toggleJoinGroup')
                         $pull: {
                             groups: { _id: _id }
                         }
-                    }, (err, data) => {
+                    }, async(err, data) => {
+                        await user.updateOne({ _id: groupFound.owner._id }, {
+                            $pull: {
+                                notifications: {
+                                    userId: userFound._id,
+                                }
+                            }
+                        });
                         res.json({
                             "status": "leave",
                             "message": "Group has been left"
@@ -125,7 +133,6 @@ router.route('/toggleJoinGroup')
                 });
             } else {
                 try {
-
                     await user.updateOne({ _id: groupFound.owner._id }, {
                         $push: {
                             notifications: {

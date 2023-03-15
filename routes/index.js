@@ -16,7 +16,7 @@ const ObjectId = mongodb.ObjectId
 require('dotenv').config()
 let gfs, gridfsBucket;
 
-const conn = mongoose.createConnection(process.env)
+const conn = mongoose.createConnection(process.env.MONGO_URL_FILE_UPLOADS)
 
 conn.once('open', () => {
     gridfsBucket = new mongoose.mongo.GridFSBucket(conn.db, {
@@ -95,29 +95,29 @@ router.route('/')
                 { $match: { _id: { $ne: userFound._id } } },
                 // Lookup the friends array and filter out the documents where userFound is already a friend
                 {
-                  $lookup: {
-                    from: "users",
-                    localField: "friends._id",
-                    foreignField: "_id",
-                    as: "friendsDetails",
-                  },
+                    $lookup: {
+                        from: "users",
+                        localField: "friends._id",
+                        foreignField: "_id",
+                        as: "friendsDetails",
+                    },
                 },
                 {
-                  $match: {
-                    "friendsDetails._id": { $ne: userFound._id },
-                  },
+                    $match: {
+                        "friendsDetails._id": { $ne: userFound._id },
+                    },
                 },
                 // Project only the fields that are needed
                 {
-                  $project: {
-                    _id: 1,
-                    name: 1,
-                    email: 1,
-                    profilePhoto:1
-                  },
+                    $project: {
+                        _id: 1,
+                        name: 1,
+                        email: 1,
+                        profilePhoto: 1
+                    },
                 },
-              ]);
-              
+            ]);
+
             res.render('index', { user: userFound, posts: posts, suggestions, baseURL })
         }
         else {
