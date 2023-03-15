@@ -93,45 +93,5 @@
     </div>
 </section>
 
-<script>
-    function doAccept(self){
-       var _id = self.getAttribute('data-id')
-       const data = { _id }
-
-       $.ajax({
-            url:`${baseURL}/friends/acceptRequest`,
-            method:'POST',
-            data: JSON.stringify(data),
-            contentType:'application/json',
-            success:function(response){
-                if(response.status == "Accepted"){
-                    self.remove()
-                    document.querySelector('.btn-unfriend').remove()
-                }
-                if(response.status == "error"){
-                    alert(response.message)
-                }
-            }
-       })
-    }
-
-    function rejectFriendRequest(self){
-        var _id = self.getAttribute('data-id')
-        const data = { _id }
-
-       $.ajax({
-            url:`${baseURL}/friends/rejectRequest`,
-            method:'POST',
-            data: JSON.stringify(data),
-            contentType:'application/json',
-            success:function(response){
-                if(response.status == "Rejected"){
-                    self.remove()
-                    
-                }
-            }
-       })
-    }
-</script>
 
 <%- include("includes/footer")%>

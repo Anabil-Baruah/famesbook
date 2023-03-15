@@ -69,47 +69,4 @@
     </section>
 
 
-    <script>
-        function rejectRequestJoinGroup(self) {
-            const group_id = self.getAttribute('data-groupId')
-            const sender_id = self.getAttribute('data-userId')
-
-            const data = { group_id, sender_id }
-            $.ajax({
-                url: `${baseURL}/groups/rejectRequestJoinGroup`,
-                method: 'POST',
-                data: JSON.stringify(data),
-                contentType: 'application/json',
-                success: function (response) {
-                    self.remove()
-                    document.querySelector('.reqAccept').remove()
-                    alert(response.message)
-                },
-                error: function (error) {
-                    alert("Sorry some error occured plz try again later")
-                }
-            })
-        }
-
-        function acceptRequestJoinGroup(self) {
-            const group_id = self.getAttribute('data-groupId')
-            const sender_id = self.getAttribute('data-userId')
-
-            const data = { group_id, sender_id }
-            $.ajax({
-                url: `${baseURL}/groups/acceptRequestJoinGroup`,
-                method: 'POST',
-                data: JSON.stringify(data),
-                contentType: 'application/json',
-                success: function (response) {
-                    self.remove()
-                    document.querySelector('.btn-unfriend').remove()
-                    alert(response.message)
-                },
-                error: function (error) {
-                    alert("Sorry some error occured plz try again later")
-                }
-            })
-        }
-    </script>
     <%- include("includes/footer")%>

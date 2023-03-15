@@ -311,8 +311,86 @@ function toggleFriendRequest2(self) {		// different function
 	});
 }
 
+function doAccept(self){
+	var _id = self.getAttribute('data-id')
+	const data = { _id }
 
+	$.ajax({
+		 url:`${baseURL}/friends/acceptRequest`,
+		 method:'POST',
+		 data: JSON.stringify(data),
+		 contentType:'application/json',
+		 success:function(response){
+			 if(response.status == "Accepted"){
+				 self.remove()
+				 document.querySelector('.btn-unfriend').remove()
+			 }
+			 if(response.status == "error"){
+				 alert(response.message)
+			 }
+		 }
+	})
+ }
 
+ function rejectFriendRequest(self){
+	 var _id = self.getAttribute('data-id')
+	 const data = { _id }
+
+	$.ajax({
+		 url:`${baseURL}/friends/rejectRequest`,
+		 method:'POST',
+		 data: JSON.stringify(data),
+		 contentType:'application/json',
+		 success:function(response){
+			 if(response.status == "Rejected"){
+				 self.remove()
+				 
+			 }
+		 }
+	})
+ }
+
+ function rejectRequestJoinGroup(self) {
+	const group_id = self.getAttribute('data-groupId')
+	const sender_id = self.getAttribute('data-userId')
+
+	const data = { group_id, sender_id }
+	$.ajax({
+		url: `${baseURL}/groups/rejectRequestJoinGroup`,
+		method: 'POST',
+		data: JSON.stringify(data),
+		contentType: 'application/json',
+		success: function (response) {
+			self.remove()
+			document.querySelector('.reqAccept').remove()
+			alert(response.message)
+		},
+		error: function (error) {
+			alert("Sorry some error occured plz try again later")
+		}
+	})
+}
+
+function acceptRequestJoinGroup(self) {
+	const group_id = self.getAttribute('data-groupId')
+	const sender_id = self.getAttribute('data-userId')
+
+	const data = { group_id, sender_id }
+	$.ajax({
+		url: `${baseURL}/groups/acceptRequestJoinGroup`,
+		method: 'POST',
+		data: JSON.stringify(data),
+		contentType: 'application/json',
+		success: function (response) {
+			self.remove()
+			document.querySelector('.btn-unfriend').remove()
+			alert(response.message)
+		},
+		error: function (error) {
+			alert("Sorry some error occured plz try again later")
+		}
+	})
+}
 
 
 
