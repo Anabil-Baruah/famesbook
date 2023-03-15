@@ -84,11 +84,11 @@ router.route('/toggleJoinGroup')
     .post(auth, async (req, res) => {
         var accessToken = req.accessToken;
         const _id = req.body._id;
-        
+
 
         const userFound = await user.findOne({ accessToken });
         const groupFound = await group.findOne({ _id: _id });
-       
+
 
         if (userFound == null) {
             res.json({
@@ -117,7 +117,7 @@ router.route('/toggleJoinGroup')
                         $pull: {
                             groups: { _id: _id }
                         }
-                    }, async(err, data) => {
+                    }, async (err, data) => {
                         await user.updateOne({ _id: groupFound.owner._id }, {
                             $pull: {
                                 notifications: {
@@ -181,6 +181,62 @@ router.route('/toggleJoinGroup')
         }
     })
 
+router.route('/rejectRequestJoinGroup')
+    .post(auth, async (req, res) => {
+        const senderId = req.body.sender_id
+        const groupId = req.body.group_id
+        const accessToken = req.accessToken
+        const userFound = await user.findOne({ accessToken })
+
+        if (userFound === null) {
+            return res.json({
+                status: "error",
+                message: "User logged out"
+            })
+        }
+
+        group.updateOne({ _id: groupId }, {
+            $pull: {
+                "members": {
+                    "_id": userFound._id
+                }
+            }
+        }, async (err, result) => {
+            await user.updateOne({ _id: senderId }, {
+                $pull: {
+                    groups: {
+                        "_id": groupId
+                    }
+                }
+            })
+            user.updateOne({ accessToken },
+                { $set: { 'notifications.$[elem].status': '' } },
+                { arrayFilters: [{ 'elem.userId': senderId, 'elem.type': "group_join_request" }] },
+                function (error, result) {
+                    if (error) {
+                        return res.json({
+                            status: "error",
+                            message: "some errorr occured"
+                        })
+                    } else {
+                        console.log(result);
+                        return res.json({
+                            status: "success",
+                            message: "Action recorded succesfully"
+                        })
+                    }
+                }
+            )
+
+        })
+
+    })
+
+
+// router.route('/acceptRequestJoinGroup')
+//     .post(auth, async(req,res)=>{
+
+//     })
 
 router.route('/image/:filename')
     .get((req, res) => {

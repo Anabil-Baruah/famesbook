@@ -1243,13 +1243,20 @@ header.sticky {
     bottom: 45px;
     position: absolute;
     right: 43px;
+    display: flex;
+    flex-direction: row;
+    
+}
+.add-btn .dropdown{
+    margin-right: 80px;
+    margin-top: 1px;
+    color: #989898;
 }
 
 .add-btn > span {
     color: rgb(19, 18, 18);
     margin-right: 120px;
     margin-top: 1rem;
-    text-shadow: 0 2px 0 #4a4a4a;
 }
 
 .add-btn > a:hover {

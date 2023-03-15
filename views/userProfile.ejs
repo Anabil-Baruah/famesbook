@@ -8,16 +8,26 @@
 
             <div class="add-btn">
                 <span style="color:black; margin-top:1rem;" id="page-likes"></span>
-                <!-- <a href="javascript:void(0);" onclick="toggleLikePage();" id="btn-toggle-like">Like</a> -->
+          
+                    <div class="dropdown p-1" >
+                        <a class="add-butn bg-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                            More
+                          </a>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                          <li><a class="dropdown-item" href="#">Block user</a></li>
+                          <li><a class="dropdown-item" href="#">Message</a></li>
+                          <li><a class="dropdown-item" href="#">Report user</a></li>
+                        </ul>
+                    </div>
+             
 
                 <% if(!isOwner){%>
                     <% if(isFriend === undefined){%>
-                    <a href="javascript:void(0);" id="btn-toggle-like" data-id="<%= user._id%>" onclick="toggleFriendRequest(this);" class="add-butn">Friend</a>
+                    <a href="javascript:void(0);" id="btn-toggle-like" data-id="<%= user._id%>" onclick="toggleFriendRequest(this);" class="add-butn ">Friend</a>
                     <%}else{%>
-                        <a href="javascript:void(0);" data-id= <%= user._id%> onclick="toggleFriendRequest(this);" class="add-butn btn-unfriend" onmouseover="this.style.color='white';">Unfriend</a>
+                        <a href="javascript:void(0);" data-id= <%= user._id%> onclick="toggleFriendRequest(this);" class="add-butn bg-secondary btn-unfriend" onmouseover="this.style.color='white';">Unfriend</a>
                     <%}%>
                 <%}%>
-                        <!-- <a href="javascript:void(0);" id="btn-toggle-like" data-id="qwe" onclick="toggleFollowPage(this);" class="add-butn btn-unfriend">Unfollow</a> -->
                     
             </div>
             <div class="container-fluid" style="margin-left:40rem; padding-left:0;">

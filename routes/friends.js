@@ -2,8 +2,8 @@ const router = require('express').Router();
 const mongoose = require('mongoose');
 const user = require('../models/users')
 const post = require('../models/posts')
-const {auth} = require('../auth')
-const {baseURL} = require('../auth')
+const { auth } = require('../auth')
+const { baseURL } = require('../auth')
 const path = require('path');
 const crypto = require('crypto');
 const { GridFsStorage } = require('multer-gridfs-storage');
@@ -63,29 +63,29 @@ router.route('/')
             { $match: { _id: { $ne: userFound._id } } },
             // Lookup the friends array and filter out the documents where userFound is already a friend
             {
-              $lookup: {
-                from: "users",
-                localField: "friends._id",
-                foreignField: "_id",
-                as: "friendsDetails",
-              },
+                $lookup: {
+                    from: "users",
+                    localField: "friends._id",
+                    foreignField: "_id",
+                    as: "friendsDetails",
+                },
             },
             {
-              $match: {
-                "friendsDetails._id": { $ne: userFound._id },
-              },
+                $match: {
+                    "friendsDetails._id": { $ne: userFound._id },
+                },
             },
             // Project only the fields that are needed
             {
-              $project: {
-                _id: 1,
-                name: 1,
-                email: 1,
-                profilePhoto:1
-              },
+                $project: {
+                    _id: 1,
+                    name: 1,
+                    email: 1,
+                    profilePhoto: 1
+                },
             },
-          ]);
-        res.render('friends', { friends, newRequest ,suggestions, baseURL})
+        ]);
+        res.render('friends', { friends, newRequest, suggestions, baseURL })
     })
 
 
@@ -125,7 +125,14 @@ router.route('/toggleFriendRequest')
                                 _id: _id
                             }
                         }
-                    }, (err, data) => {
+                    }, async (err, data) => {
+                        await user.updateOne({ "_id": friendFound._id }, {
+                            $pull: {
+                                "notifications": {
+                                    userId: userFound._id
+                                }
+                            }
+                        })
                         res.json({
                             "status": "unfriend",
                             "message": "friend has been removed from your friend list"
@@ -152,7 +159,18 @@ router.route('/toggleFriendRequest')
                                 status: "Accepted"
                             }
                         }
-                    }, (err, data) => {
+                    }, async (err, data) => {
+                        await user.updateOne({ "_id": friendFound._id }, {
+                            $push: {
+                                "notifications": {
+                                    _id: new ObjectId(),
+                                    type: "friend_request",
+                                    content: `${userFound.name} sent you a friend request`,
+                                    profilePhoto: userFound.profilePhoto,
+                                    userId: userFound._id
+                                }
+                            }
+                        })
                         res.json({
                             "status": "friend",
                             "message": `Request has been send to ${friendFound.name}`
@@ -179,12 +197,24 @@ router.route('/acceptRequest')
                 $set: {
                     "friends.$[elem].status": "Accepted"
                 }
-            }, { "arrayFilters": [{ "elem._id": _id }] }, (err, result) => {
-                if (!err)
+            }, { "arrayFilters": [{ "elem._id": _id }] }, async(err, result) => {
+                if (!err) {
                     res.json({
                         status: "Accepted",
                         message: "Request has been accepted"
                     })
+                    await user.updateOne({ "_id": _id }, {
+                        $push: {
+                            "notifications": {
+                                _id: new ObjectId(),
+                                type: "friend_request",
+                                content: `${userFound.name} accepted your friend request`,
+                                profilePhoto: userFound.profilePhoto,
+                                userId: userFound._id
+                            }
+                        }
+                    })
+                }
                 else
                     res.json({
                         status: "error",

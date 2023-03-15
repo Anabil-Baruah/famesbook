@@ -13,6 +13,7 @@ const bcrypt = require('bcrypt')
 const multer = require('multer');
 const mongodb = require('mongodb');
 const ObjectId = mongodb.ObjectId
+const {formatDate} = require('../formatDate')
 require('dotenv').config()
 let gfs, gridfsBucket;
 
@@ -82,12 +83,13 @@ router.route('/')
             // }
 
             ids.reverse()
-            const posts = await post.find({
+            var posts = await post.find({
                 "owner._id": {
                     $in: ids
                 }
             })
-
+            posts = formatDate(posts)
+            
             // const suggestions = await user.find({ $and: [{ _id: { "$ne": userFound._id } }, { friends: { $not: { $elemMatch: { _id: userFound._id } } } }] })
             // console.log(suggestions)
             const suggestions = await user.aggregate([

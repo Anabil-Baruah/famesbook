@@ -282,7 +282,7 @@ function toggleFriendRequest(self) {
 	});
 }
 
-function toggleFriendRequest2(self) {
+function toggleFriendRequest2(self) {		// different function
 	var _id = self.getAttribute("data-id")
 	const data = {
 		_id: _id
@@ -318,44 +318,9 @@ function toggleFriendRequest2(self) {
 
 
 
-function isAttachmentImage(attachment) {
-	const parts = attachment.split("/");
-	let filename = "";
-	if (parts.length > 0) {
-		filename = parts[parts.length - 1];
-	}
 
-	const filenameParts = filename.split(".");
-	let extension = "";
-	if (filenameParts.length > 0) {
-		extension = filenameParts[filenameParts.length - 1];
-	}
-	extension = extension.toLowerCase();
 
-	const acceptedImageTypes = ['gif', "jpg", 'jpeg', 'png'];
-	return extension && acceptedImageTypes.includes(extension);
-}
 
-function getTimePassed(timestamp) {
-	const currentTimestamp = new Date().getTime();
-	const difference = currentTimestamp - timestamp;
-
-	const seconds = Math.floor(difference / 1000);
-	const minutes = Math.floor(seconds / 60);
-	const hours = Math.floor(minutes / 60);
-
-	if (hours > 0) {
-		return hours + " hours ago";
-	}
-	if (minutes > 0) {
-		return minutes + " minutes ago";
-	}
-	if (seconds > 0) {
-		return seconds + " seconds ago";
-	}
-
-	return "";
-}
 
 
 function showPostLikers(self) {
