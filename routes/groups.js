@@ -202,41 +202,66 @@ router.route('/rejectRequestJoinGroup')
                 }
             }
         }, async (err, result) => {
-            await user.updateOne({ _id: senderId }, {
-                $pull: {
-                    groups: {
-                        "_id": groupId
+            if (!err) {
+                await user.updateOne({ _id: senderId }, {
+                    $pull: {
+                        groups: {
+                            "_id": groupId
+                        }
                     }
-                }
-            })
-            user.updateOne({ accessToken },
-                { $set: { 'notifications.$[elem].status': '' } },
-                { arrayFilters: [{ 'elem.userId': senderId, 'elem.type': "group_join_request" }] },
-                function (error, result) {
-                    if (error) {
-                        return res.json({
-                            status: "error",
-                            message: "some errorr occured"
-                        })
-                    } else {
-                        console.log(result);
-                        return res.json({
-                            status: "success",
-                            message: "Action recorded succesfully"
-                        })
+                })
+                user.updateOne({ accessToken },
+                    { $set: { 'notifications.$[elem].status': '' } },
+                    { arrayFilters: [{ 'elem.userId': senderId, 'elem.type': "group_join_request" }] },
+                    function (error, result) {
+                        if (error) {
+                            return res.json({
+                                status: "error",
+                                message: "some errorr occured"
+                            })
+                        } else {
+                            console.log(result);
+                            return res.json({
+                                status: "success",
+                                message: "Action recorded succesfully"
+                            })
+                        }
                     }
-                }
-            )
+                )
+            }
 
         })
 
     })
 
 
-// router.route('/acceptRequestJoinGroup')
-//     .post(auth, async(req,res)=>{
+router.route('/acceptRequestJoinGroup')
+    .post(auth, async (req, res) => {
+        const senderId = req.body.sender_id
+        const groupId = req.body.group_id
+        const accessToken = req.accessToken
+        const userFound = await user.findOne({ accessToken })
 
-//     })
+        if (userFound === null) {
+            return res.json({
+                status: "error",
+                message: "User logged out"
+            })
+        }
+
+        group.updateOne({ _id: groupId },
+            { $set: { 'members.$[elem].status': 'Accepted' } },
+            { arrayFilters: [{ 'elem._id': senderId }] },
+            (err, result) => {
+                if (!err) {
+                    return res.json({
+                        status: "success",
+                        message: "Action recorded succesfully"
+                    })
+                }
+
+            })
+    })
 
 router.route('/image/:filename')
     .get((req, res) => {

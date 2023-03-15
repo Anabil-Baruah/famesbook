@@ -103,7 +103,7 @@
                 contentType: 'application/json',
                 success: function (response) {
                     self.remove()
-                    document.querySelector('.reqAccept').remove()
+                    document.querySelector('.btn-unfriend').remove()
                     alert(response.message)
                 },
                 error: function (error) {
