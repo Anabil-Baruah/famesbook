@@ -136,13 +136,28 @@ router.route('/updateInfo/:id')
             user.findOneAndUpdate({ _id: req.params.id }, {
                 $set: {
                     name: req.body.name,
+                    username:req.body.name,
                     email: req.body.email,
                     dob: req.body.dob,
                     city: req.body.city,
                     country: req.body.country,
                     aboutMe: req.body.aboutMe
                 }
-            }, (err, result) => {
+            }, async (err, result) => {
+                await post.updateMany({ "owner._id": req.params.id }, {
+                    $set: {
+                        "owner.name": req.body.name
+                    }
+                })
+                await post.updateMany({}, {
+                    $set: {
+                        "comments.$[eleX].user.name": req.body.name,
+                    }
+                }, {
+                    arrayFilters: [{
+                        "eleX.user._id": req.params.id
+                    }]
+                })
                 if (err)
                     res.send("sorry an error occured")
                 else

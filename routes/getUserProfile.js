@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const user = require('../models/users')
 const post = require('../models/posts')
 const { auth } = require('../auth')
+const { baseURL } = require('../auth')
 const path = require('path');
 const crypto = require('crypto');
 const { GridFsStorage } = require('multer-gridfs-storage');
@@ -65,7 +66,7 @@ router.route('/')
                 }
             })
             posts = formatDate(posts)
-            res.render('userProfile', { user: userFound, posts: posts, isOwner: true })
+            res.render('userProfile', { user: userFound, posts: posts, isOwner: true, baseURL })
         }
     })
 
@@ -92,7 +93,7 @@ router.route('/:userId')
 
 
             var isFriend = userFound.friends.find(frnd => frnd._id.toString() === friendFound._id.toString())
-            res.render('userProfile', { user: friendFound, posts: posts, isOwner: false, isFriend })
+            res.render('userProfile', { user: friendFound, posts: posts, isOwner: false, isFriend, baseURL })
         }
 
     })

@@ -58,14 +58,14 @@
                                         <div class="post-meta">
                                             <div class="description">
                                                 <p>
-                                                   beautiful momomm
+                                                    <%= post.sharedPost.caption%>
                                                 </p>
                                             </div>
                                                 <%if(post.sharedPost.contentType === 'image/jpeg' || post.sharedPost.contentType == 'image/png'){%>
                                                     <img src="/image/<%= post.sharedPost.filename%>">
                                                 <%}%>
                                                 <%if(post.sharedPost.contentType === 'video/mp4' || post.sharedPost.contentType === 'vid/mp4'){%>
-                                                    <video style = "height:20%;width:100%;" controls src = "'+mainURL+"/"+data.sharePost.video+'"></video>
+                                                <video style = "height:20%;width:100%;" controls src = "<%=baseURL%>/<%=data.sharePost.filename%>"></video>
                                                 <%}%>
                                         </div>
                                     </div>
@@ -132,9 +132,9 @@
                                             <div class="we-comment">
                                                 <div class="coment-head">
                                                     <h5><a href="/"><%= comment.user.name %></a></h5>
-                                            <span>'+date+'</span>
+                                            <span><%= comment.createdAt %></span>
                                             <a class="we-reply" href="javascript:void(0);" data-post-id="'+data._id+'" data-comment-id="'+comment._id+'" onclick="prepareToReply(this);" title="Reply"><i class="fa fa-reply"></i></a>
-                                            <p>This is a nice comment</p>
+                                            <p><%= comment.Comment%></p>
                                             </div>
                                             <ul>
                                                 <% comment.replies.forEach((reply)=>{ %>

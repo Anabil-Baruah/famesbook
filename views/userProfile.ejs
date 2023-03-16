@@ -83,7 +83,7 @@
                                 <div class="gap gray-bg">
                                     <div class="container-fluid">
                                         <% if(posts){%>
-                                            <%- include('includes/posts.ejs', {posts:posts, isOwner})%>
+                                            <%- include('includes/posts.ejs', {posts:posts, isOwner, baseURL})%>
                                         <%}%>
 
                                     </div>
