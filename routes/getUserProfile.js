@@ -2,7 +2,7 @@ const router = require('express').Router();
 const mongoose = require('mongoose');
 const user = require('../models/users')
 const post = require('../models/posts')
-const {auth} = require('../auth')
+const { auth } = require('../auth')
 const path = require('path');
 const crypto = require('crypto');
 const { GridFsStorage } = require('multer-gridfs-storage');
@@ -11,7 +11,7 @@ const Grid = require('gridfs-stream');
 require('dotenv').config()
 const multer = require('multer');
 const mongodb = require('mongodb');
-const {formatDate} = require('../formatDate')
+const { formatDate } = require('../formatDate')
 
 let gfs, gridfsBucket;
 
@@ -74,6 +74,9 @@ router.route('/:userId')
         const friendFound = await user.findOne({ _id: req.params.userId })
         const userFound = await user.findOne({ accessToken: req.accessToken })
 
+        if (req.params.userId.toString() === userFound._id.toString())
+            return res.redirect('/user')
+
         if (friendFound) {
             var ids = [];
             ids.push(friendFound._id);
@@ -86,10 +89,10 @@ router.route('/:userId')
                 }
             })
             posts = formatDate(posts)
-            console.log(posts)
+
 
             var isFriend = userFound.friends.find(frnd => frnd._id.toString() === friendFound._id.toString())
-            res.render('userProfile', { user: friendFound, posts: posts, isOwner: false , isFriend})
+            res.render('userProfile', { user: friendFound, posts: posts, isOwner: false, isFriend })
         }
 
     })
