@@ -2,17 +2,28 @@
     <% locals.posts.forEach(function(post){ %>
         <div class="loadMore" id="newsfeed">
             <div class="central-meta item">
+                <%if(isOwner){%>
+                    <div class="container dropdn">
+                        <!-- <i class="ti-more dropdown-toggle"data-bs-toggle="dropdown" aria-expanded="false"></i> -->
+                        <i class="fa-solid fa-ellipsis-vertical dropdown-toggle"data-bs-toggle="dropdown" aria-expanded="false"></i>
+                        <!-- <i class="fa-solid fa-grip-dots"></i> -->
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                          <li><a href="javascript:void(0);" data-id=<%= post._id%> onclick="deletePost(this)" class="dropdown-item"><i class="fa-solid fa-trash-can"></i> Delete </a></li>
+                          <li><a class="dropdown-item" href="javascript:void(0);" data-id=<%= post._id%> onclick="editPost(this)" data-bs-toggle="modal" data-bs-target="#editModal"> <i class="fa-solid fa-pen-to-square"></i> Edit</a></li>
+                        </ul>
+                      </div>
+                      <%}%>
                 <ul id="displayPost">
                     <li style="width:100%;">
                         <div class="user-post">
                             <div class="friend-info">
                                 <figure>
-                                    <img src="/image/<%=user.profilePhoto%>"
+                                    <img src="/image/<%=post.owner.profileImage%>"
                                         style="width:45px; height:45px; object-fit:cover; border-radius:50%;">
                                 </figure>
                                 <div class="friend-name">
                                     <ins>
-                                        <a href=""><%= user.username %>
+                                        <a href=""><%= post.owner.name %>
                                         </a>
                                     </ins>
 
@@ -28,6 +39,7 @@
                                                 
                         <% if(post.isShared){%>
                             <div class="central-meta item">
+                                
                                 <div class="user-post">
                                     <div class="friend-info">
                                         <figure>

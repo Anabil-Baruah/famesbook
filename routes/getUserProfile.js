@@ -11,7 +11,7 @@ const Grid = require('gridfs-stream');
 require('dotenv').config()
 const multer = require('multer');
 const mongodb = require('mongodb');
-
+const {formatDate} = require('../formatDate')
 
 let gfs, gridfsBucket;
 
@@ -59,12 +59,12 @@ router.route('/')
 
 
             ids.reverse()
-            const posts = await post.find({
+            var posts = await post.find({
                 "owner._id": {
                     $in: ids
                 }
             })
-           
+            posts = formatDate(posts)
             res.render('userProfile', { user: userFound, posts: posts, isOwner: true })
         }
     })
@@ -80,11 +80,12 @@ router.route('/:userId')
 
 
             ids.reverse()
-            const posts = await post.find({
+            var posts = await post.find({
                 "owner._id": {
                     $in: ids
                 }
             })
+            posts = formatDate(posts)
             console.log(posts)
 
             var isFriend = userFound.friends.find(frnd => frnd._id.toString() === friendFound._id.toString())

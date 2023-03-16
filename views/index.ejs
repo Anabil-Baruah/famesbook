@@ -64,7 +64,7 @@
                                     </div>
                                 </div>
                                 <% if(posts){%>
-                               <%- include('includes/posts.ejs', {posts:posts})%>
+                               <%- include('includes/posts.ejs', {posts:posts, isOwner:false})%>
                                     <%}%>
                             </div>
                             <div class="col-md-3">

@@ -5,7 +5,7 @@
                 <img style="width:100%; height:700px; object-fit:cover;" class="cover-photo" id="cover-photo"
                     src="/image/<%= user.coverPhoto %>" alt="no photo uploaded">
             </figure>
-
+            <% if(!isOwner){%>
             <div class="add-btn">
                 <span style="color:black; margin-top:1rem;" id="page-likes"></span>
           
@@ -21,7 +21,7 @@
                     </div>
              
 
-                <% if(!isOwner){%>
+               
                     <% if(isFriend === undefined){%>
                     <a href="javascript:void(0);" id="btn-toggle-like" data-id="<%= user._id%>" onclick="toggleFriendRequest(this);" class="add-butn ">Friend</a>
                     <%}else{%>
@@ -82,139 +82,9 @@
                                 </div>
                                 <div class="gap gray-bg">
                                     <div class="container-fluid">
-                                        <% if(posts){ posts.reverse() %>
-                                            <% posts.forEach(function(post){ %>
-                                                <div class="loadMore" id="newsfeed">
-                                                    <div class="central-meta item">
-                                                        <%if(isOwner){%>
-                                                        <div class="container dropdn">
-                                                            <!-- <i class="ti-more dropdown-toggle"data-bs-toggle="dropdown" aria-expanded="false"></i> -->
-                                                            <i class="fa-solid fa-ellipsis-vertical dropdown-toggle"data-bs-toggle="dropdown" aria-expanded="false"></i>
-                                                            <!-- <i class="fa-solid fa-grip-dots"></i> -->
-                                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                                              <li><a href="javascript:void(0);" data-id=<%= post._id%> onclick="deletePost(this)" class="dropdown-item"><i class="fa-solid fa-trash-can"></i> Delete </a></li>
-                                                              <li><a class="dropdown-item" href="javascript:void(0);" data-id=<%= post._id%> onclick="editPost(this)" data-bs-toggle="modal" data-bs-target="#editModal"> <i class="fa-solid fa-pen-to-square"></i> Edit</a></li>
-                                                            </ul>
-                                                          </div>
-                                                          <%}%>
-                                                        <ul id="displayPost">
-                                                            <li style="width:100%;">
-                                                                <div class="user-post">
-                                                                    <div class="friend-info">
-                                                                        <figure>
-                                                                            <img src="/image/<%=post.owner.profileImage%>"
-                                                                            style="width:45px; height:45px; object-fit:cover; border-radius:50%;">
-                                                                        </figure>
-                                                                        <div class="friend-name">
-                                                                            <ins>
-                                                                                <a href="#"><%= post.owner.name%>
-                                                                                </a>
-                                                                            </ins>
-                                                                            <% var months = ["Jan", "Feb", "March", "May", "June", "july", "Aug", 'sept', "Oct", "Nov", "Dec"]; 
-                                                                            var createdAt = new Date(post.createdAt);
-                                                                            var date = createdAt.getDate()+"";
-                                                                            date = date.padStart(2,"0")+" "+months[createdAt.getMonth()-1] + ", "+createdAt.getFullYear(); %>
-                                                                            
-                                                                            <span><%= date %></span>
-                                                                        </div>
-                                                                        <div class="post-meta">
-                                                                            <div class="description">
-                                                                                <p>
-                                                                                    <%= post.caption %>
-                                                                                </p>
-                                                                            </div>
-                                                                            <% if(post.isShared){%>
-                                                                                <div class="central-meta item">
-                                                                                    <div class="user-post">
-                                                                                        <div class="friend-info">
-                                                                                            <figure>
-                                                                                                <img src="/image/<%= post.sharedPost.owner.profileImage%>" style="width:45px; height:45px; object-fit:cover;">
-                                                                                            </figure>
-                                                                                            <div class="friend-name">
-                                                                                                <ins >
-                                                                                                    <a href="#">
-                                                                                                        <%= post.sharedPost.owner.name%>
-                                                                                                    </a>
-                                                                                                </ins>   
-                                                                                               
-                                                        
-                                                                                                <span></span>
-                                                                                            </div>
-                                                                                            <div class="post-meta">
-                                                                                                <div class="description">
-                                                                                                    <p>
-                                                                                                       beautiful momomm
-                                                                                                    </p>
-                                                                                                </div>
-                                                                                                    <%if(post.sharedPost.contentType === 'image/jpeg' || post.sharedPost.contentType == 'image/png'){%>
-                                                                                                        <img src="/image/<%= post.sharedPost.filename%>">
-                                                                                                    <%}%>
-                                                                                                    <%if(post.sharedPost.contentType === 'video/mp4' || post.sharedPost.contentType === 'vid/mp4'){%>
-                                                                                                        <video style = "height:20%;width:100%;" controls src = "'+mainURL+"/"+data.sharePost.video+'"></video>
-                                                                                                    <%}%>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            <% }%>
-
-                                                                <% if(post.contentType == 'image/png' || post.contentType == 'image/jpeg'){ %>
-                                                                    <img src="/image/<%= post.filename %>" alt="">
-                                                                <% } %>
-                                                                <% if(post.contentType === 'video/mp4' || post.contentType === 'vid/mp4'){ %>
-                                                                    <video controls> <source src="video/<%= post.filename %>" type = "video/mp4"></video> 
-                                                                <% } %>
-                                                
-                                            
-
-                                        <% var likeColor = false %>
-                                        <% if(post.likers.some(pst=>pst._id.toString() === user._id.toString())){likeColor = true} %>
-
-                                                                            <div class="we-video-info">
-                                                                                <ul>
-                                                                                    <li>
-                                                                                        
-                                                                                        <span onclick="toggleLikePost(this);"
-                                                                                            data-id=<%= post._id%>>
-                                                                                            <% if(likeColor){%>
-                                                                                            <i style="color:blue"
-                                                                                                class="fa-solid fa-thumbs-up"></i>
-                                                                                            <% }else{%>
-                                                                                                <i
-                                                                                                class="fa-solid fa-thumbs-up"></i>
-                                                                                            <%}%>
-                                                                                            <ins><%= post.likers.length%></ins>
-                                                                                        </span>
-                                                                                    </li>
-                                                                                    <li>
-                                                                                        <span class="comment"
-                                                                                            title="Comments">
-                                                                                            <i
-                                                                                                class="fa fa-comments-o"></i>
-                                                                                            <ins><%= post.comments.length%></ins>
-                                                                                        </span>
-                                                                                    </li>
-
-                                                                                    <li>
-                                                                                        <span title="Comments"
-                                                                                            
-                                                                                            data-id=<%= post._id%>>
-                                                                                            <i
-                                                                                                class="fa-solid fa-share-from-square"></i>
-                                                                                            <ins><%= post.shares.length%></ins>
-                                                                                        </span>
-                                                                                    </li>
-                                                                                </ul>
-                                                                            </div><!-- like section ends -->
-                                                                        </div>
-                                                                    </div><!-- html+=createCommentsSection(data); -->
-                                                                </div>
-                                                    </div>
-                                                    </li>
-                                                    </ul>
-                                                </div>
-                                                <% }) %>
-                                                    <% } %>
+                                        <% if(posts){%>
+                                            <%- include('includes/posts.ejs', {posts:posts, isOwner})%>
+                                        <%}%>
 
                                     </div>
                                 </div>

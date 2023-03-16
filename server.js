@@ -59,6 +59,9 @@ app.use('/groups', require('./routes/groups'))
 app.use('/pages', require('./routes/pages'))
 app.use('/user', require('./routes/getUserProfile'))
 app.use('/search', require('./routes/search'))
+app.use(function(req, res, next) {
+    res.status(404).render('404');
+ });
 
 app.set('view engine', 'ejs');
 app.listen(port, () => {
