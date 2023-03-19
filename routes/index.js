@@ -2,6 +2,7 @@ const router = require('express').Router();
 const mongoose = require('mongoose');
 const user = require('../models/users')
 const post = require('../models/posts')
+const redis = require('redis')
 const { auth } = require('../auth')
 const { baseURL } = require('../auth')
 const path = require('path');
