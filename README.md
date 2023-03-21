@@ -58,8 +58,6 @@ To run this project, you will need to add the following environment variables to
 
 `MONGO_URL`
 
-`MONGO_URL_FILE_UPLOADS`
-
 
 
 ## Documentation
