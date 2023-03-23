@@ -5,7 +5,7 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const app = express()
 require('dotenv').config()
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 4000
 
 //Db configuration
 mongoose.connect(process.env.MONGO_URL, {
@@ -19,8 +19,8 @@ db.once('open', function () {
     console.log('Connected to MongoDB');
 });
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(cookieParser());
 app.use('/', express.static(__dirname + '/public'));
 app.use('/settings', express.static(__dirname + '/public'));
@@ -61,11 +61,12 @@ app.use('/groups', require('./routes/groups'))
 app.use('/pages', require('./routes/pages'))
 app.use('/user', require('./routes/getUserProfile'))
 app.use('/search', require('./routes/search'))
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     res.status(404).render('404');
- });
+});
 
 app.set('view engine', 'ejs');
+
 app.listen(port, () => {
     console.log("server started")
 })

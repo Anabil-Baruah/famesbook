@@ -10,7 +10,7 @@ const userSchema = mongoose.Schema({
         default: false
     },
 
-    filename: String,
+    fileURL: String,
 
     contentType: {
         type: String,

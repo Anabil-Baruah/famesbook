@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const {auth} = require('../auth')
+const { auth } = require('../auth')
 const user = require('../models/users')
 const post = require('../models/posts')
 const page = require('../models/pages')
@@ -46,25 +46,6 @@ router.route('/:query')
         res.render("search", { users, groups, pages, user: userFound })
     })
 
-
-
-
-router.route('/image/:filename')
-    .get((req, res) => {
-        gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
-            if (!file || file.length === 0)
-                return res.status(404).json({
-                    err: "No files exist"
-                })
-            //check if image
-            if (file.contentType === 'image/jpeg' || file.contentType === 'img/png') {
-                const readstream = gridfsBucket.openDownloadStreamByName(file.filename);
-                readstream.pipe(res)
-            } else {
-                res.status(404).json({ err: "Not an image" })
-            }
-        })
-    })
 
 
 module.exports = router

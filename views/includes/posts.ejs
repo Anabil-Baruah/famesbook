@@ -18,12 +18,12 @@
                         <div class="user-post">
                             <div class="friend-info">
                                 <figure>
-                                    <img src="/image/<%=post.owner.profileImage%>"
+                                    <img src="<%=post.owner.profileImage%>"
                                         style="width:45px; height:45px; object-fit:cover; border-radius:50%;">
                                 </figure>
                                 <div class="friend-name">
                                     <ins>
-                                        <a href="/user/<%= post.owner._id%>"><%= post.owner.name %>
+                                        <a href="<%= baseURL%>/user/<%= post.owner._id%>"><%= post.owner.name %>
                                         </a>
                                     </ins>
 
@@ -43,7 +43,7 @@
                                 <div class="user-post">
                                     <div class="friend-info">
                                         <figure>
-                                            <img src="/image/<%= post.sharedPost.owner.profileImage%>" style="width:45px; height:45px; object-fit:cover;">
+                                            <img src="<%= post.sharedPost.owner.profileImage%>" style="width:45px; height:45px; object-fit:cover;">
                                         </figure>
                                         <div class="friend-name">
                                             <ins >
@@ -62,10 +62,10 @@
                                                 </p>
                                             </div>
                                                 <%if(post.sharedPost.contentType === 'image/jpeg' || post.sharedPost.contentType == 'image/png'){%>
-                                                    <img src="/image/<%= post.sharedPost.filename%>">
+                                                    <img src="<%= post.sharedPost.fileURL%>">
                                                 <%}%>
                                                 <%if(post.sharedPost.contentType === 'video/mp4' || post.sharedPost.contentType === 'vid/mp4'){%>
-                                                <video style = "height:20%;width:100%;" controls src = "<%=baseURL%>/<%=data.sharePost.filename%>"></video>
+                                                <video style = "height:20%;width:100%;" controls src = "<%=baseURL%>/<%=data.sharePost.fileURL%>"></video>
                                                 <%}%>
                                         </div>
                                     </div>
@@ -74,10 +74,10 @@
                         <% }%>
 
                             <% if(post.contentType == 'image/png' || post.contentType == 'image/jpeg'){ %>
-                                <img src="image/<%= post.filename %>" alt="">
+                                <img src="<%= post.fileURL%>" alt="">
                             <% } %>
                             <% if(post.contentType === 'video/mp4' || post.contentType === 'vid/mp4'){ %>
-                                <video controls> <source src="video/<%= post.filename %>" type = "video/mp4"></video> 
+                                <video controls> <source src="<%= post.fileURL%>" type = "video/mp4"></video> 
                             <% } %>
                             <% var likeColor = false %>
                             <% if(post.likers.some(pst=>pst._id.toString() === user._id.toString())){likeColor = true} %>  
@@ -126,7 +126,7 @@
                                     <% post.comments.forEach((comment)=>{ %>
                                         <li>
                                             <div class="comet-avatar">
-                                                <img src="image/<%= comment.user.profileImage %>">
+                                                <img src="<%= comment.user.profileImage %>">
                                             </div>
         
                                             <div class="we-comment">
@@ -159,7 +159,7 @@
                                 <ul class="we-comet">
                                     <li class="post-comment">
                                         <div class="comet-avatar">
-                                            <img src="/image/<%=user.profilePhoto%>">
+                                            <img src="<%=user.profilePhoto%>">
                                         </div>
                                         <div class="post-comt-box">
                                             <form method="post" action="/addComment">

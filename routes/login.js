@@ -2,11 +2,12 @@ const router = require('express').Router();
 const user = require('../models/users')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
+const { baseURL } = require('../auth')
 require('dotenv').config()
 
 router.route('/')
     .get((req, res) => {
-        res.render('login')
+        res.render(`login`)
     })
     .post(async (req, res) => {
         var email = req.body.email;
@@ -33,7 +34,7 @@ router.route('/')
                         res.cookie('jwt', accessToken)
                         res.redirect('/')
                     } else {
-                        res.redirect('/login')
+                        res.redirect(`${baseURL}/login`)
                     }
                 })
             } else {

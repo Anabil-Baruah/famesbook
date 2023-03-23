@@ -1,52 +1,11 @@
 const router = require('express').Router();
 const user = require('../models/users')
 const post = require('../models/posts')
-const path = require('path');
-const crypto = require('crypto');
-const mongoose = require('mongoose');
-const multer = require('multer');
-const { GridFsStorage } = require('multer-gridfs-storage');
-// const methodOverride = require('method-override');
-const Grid = require('gridfs-stream');
 const { auth } = require('../auth')
 const { baseURL } = require('../auth')
 const bcrypt = require('bcrypt')
+const cloudinary = require('../fileUpload')
 
-
-
-let gfs, gridfsBucket;
-
-const conn = mongoose.createConnection('mongodb://localhost:27017/File_uploads')
-
-conn.once('open', () => {
-    gridfsBucket = new mongoose.mongo.GridFSBucket(conn.db, {
-        bucketName: 'uploads'
-    });
-    gfs = Grid(conn.db, mongoose.mongo);
-    gfs.collection('uploads');
-})
-
-//create storage engine
-const storage = new GridFsStorage({
-    url: 'mongodb://localhost:27017/File_uploads',
-    file: (req, file) => {
-        return new Promise((resolve, rejects) => {
-            crypto.randomBytes(16, (err, buf) => {
-                if (err)
-                    return rejects(err)
-
-                const filename = buf.toString('hex') + path.extname(file.originalname);
-                const fileInfo = {
-                    filename,
-                    bucketName: 'uploads'  //bucket name should mathch the collection name
-                };
-                resolve(fileInfo)
-                req.filename = filename
-            })
-        })
-    }
-});
-const upload = multer({ storage });
 
 router.route('/')
     .get(auth, (req, res) => {
@@ -54,7 +13,16 @@ router.route('/')
     })
 
 router.route('/updateProfile')
-    .get(auth, (req, res) => {
+    .get(auth, async(req, res) => {
+        const userFound = await user.findOne({ accessToken: req.accessToken })
+       
+        if(userFound === null){
+            return res.json({
+                status:"error",
+                message:"User logged out",
+            })
+        }
+
         user.find({ accessToken: req.accessToken }).exec((err, users) => {
             // console.log(users)
             if (err) {
@@ -66,68 +34,93 @@ router.route('/updateProfile')
         })
     })
 
-router.route('/uploadCoverPhoto/:id')
-    .post(auth, upload.single('coverPhoto'), (req, res) => {
-        user.findByIdAndUpdate(req.params.id, { $set: { coverPhoto: req.filename } }, { new: true }).exec().then((user) => {
-            // res.redirect('/settings/updateProfile',{user})
-            res.redirect('/settings/updateProfile')
-        }).catch((err) => {
-            console.log(err)
-        });
+router.route('/uploadCoverPhoto')
+    .post(auth, async (req, res) => {
+        const userFound = await user.findOne({ accessToken: req.accessToken })
+       
+        if(userFound === null){
+            return res.json({
+                status:"error",
+                message:"User logged out",
+            })
+        }
+
+        cloudinary.uploader.upload(`data:${req.body.fileType};base64,${req.body.base64String}`, {  
+            resource_type: 'raw',
+            folder: 'famesbook',
+            width: 1000,
+            height: 600
+            // crop: "scale"
+        }).then((result) => { 
+            user.findByIdAndUpdate(userFound._id, { $set: { coverPhoto: result.url } }, { new: true }).exec().then((user) => {
+                // res.redirect('/settings/updateProfile',{user})
+                res.json({
+                    "status": "success",
+                    "message": "profile updated succesfully"
+                })
+            }).catch((err) => {
+                console.log(err)
+            })
+        }).catch((error)=>{
+            console.log("error occured")
+            res.json({
+                "status": "error",
+                "message": "file too large"
+            })
+        })
+
     })
 
-router.route('/uploadProfileImg/:id')
-    .post(auth, upload.single('profileImage'), async (req, res) => {
+router.route('/uploadProfileImg')
+    .post(auth, async (req, res) => {
         const userFound = await user.findOne({ accessToken: req.accessToken })
-        user.findByIdAndUpdate(req.params.id, { $set: { profilePhoto: req.filename } }, { new: true }).exec().then(async (user) => {
-            // const comments = await post.aggregate([
-            //     // Match documents where the _id field is not equal to userFound._id
-            //     { $match: { _id: { $ne: userFound._id } } },
-            //     // Lookup the friends array and filter out the documents where userFound is already a friend
-            //     {
-            //       $lookup: {
-            //         from: "users",
-            //         localField: "friends._id",
-            //         foreignField: "_id",
-            //         as: "friendsDetails",
-            //       },
-            //     },
-            //     {
-            //       $match: {
-            //         "friendsDetails._id": { $ne: userFound._id },
-            //       },
-            //     },
-            //     // Project only the fields that are needed
-            //     {
-            //       $project: {
-            //         _id: 1,
-            //         name: 1,
-            //         email: 1,
-            //         profilePhoto:1
-            //       },
-            //     },
-            //   ]);
-
-            await post.updateMany({}, {
-                $set: {
-                    "comments.$[eleX].user.profileImage": req.filename
-                }
-            }, {
-                arrayFilters: [{
-                    "eleX.user._id": userFound._id
-                }]
+        if(userFound === null){
+            return res.json({
+                status:"error",
+                message:"User logged out",
             })
+        }
 
-            await post.updateMany({ "owner._id": userFound._id }, {
-                $set: {
-                    "owner.profileImage": req.filename
-                }
+        cloudinary.uploader.upload(`data:${req.body.fileType};base64,${req.body.base64String}`, {
+            resource_type: 'raw',
+            folder: 'famesbook',
+            width: 1000,
+            height: 600
+            // crop: "scale"
+        }).then((result) => {
+           
+            user.findByIdAndUpdate(userFound._id, { $set: { profilePhoto: result.url } }, { new: true }).exec().then(async (user) => {
+
+                await post.updateMany({}, {
+                    $set: {
+                        "comments.$[eleX].user.profileImage": result.url
+                    }
+                }, {
+                    arrayFilters: [{
+                        "eleX.user._id": userFound._id
+                    }]
+                })
+
+                await post.updateMany({ "owner._id": userFound._id }, {
+                    $set: {
+                        "owner.profileImage": result.url
+                    }
+                })
+
+                res.json({
+                    "status": "success",
+                    "message": "profile updated succesfully"
+                })
+            }).catch((err) => {
+                console.log(err)
+            });
+        }).catch((error) => {
+            console.log("error occured")
+            res.json({
+                "status": "error",
+                "message": "file too large"
             })
-
-            res.redirect('/settings/updateProfile')
-        }).catch((err) => {
-            console.log(err)
-        });
+        })
     })
 
 router.route('/updateInfo/:id')
@@ -136,7 +129,7 @@ router.route('/updateInfo/:id')
             user.findOneAndUpdate({ _id: req.params.id }, {
                 $set: {
                     name: req.body.name,
-                    username:req.body.name,
+                    username: req.body.name,
                     email: req.body.email,
                     dob: req.body.dob,
                     city: req.body.city,
@@ -161,7 +154,7 @@ router.route('/updateInfo/:id')
                 if (err)
                     res.send("sorry an error occured")
                 else
-                    res.redirect('/settings/updateProfile')
+                    res.redirect(`${baseURL}/settings/updateProfile`)
             })
 
         } catch (error) {
@@ -238,7 +231,7 @@ router.route('/confirmPassChange')
                                 message: "Password updated succesfully"
                             }
                             //console.log(req.session.message)
-                            res.redirect('passChange')
+                            res.redirect(`${baseURL}/passChange`)
                         }
                     })
                 })
@@ -254,23 +247,6 @@ router.route('/logout')
     .get(auth, async (req, res) => {
         res.clearCookie('jwt')
         res.redirect(`${baseURL}`)
-    })
-
-router.route('/image/:filename')
-    .get((req, res) => {
-        gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
-            if (!file || file.length === 0)
-                return res.status(404).json({
-                    err: "No files exist"
-                })
-            //check if image
-            if (file.contentType === 'image/jpeg' || file.contentType === 'image/png' || file.contentType === 'image/jpg') {
-                const readstream = gridfsBucket.openDownloadStreamByName(file.filename);
-                readstream.pipe(res)
-            } else {
-                res.status(404).json({ err: "Not an image" })
-            }
-        })
     })
 
 

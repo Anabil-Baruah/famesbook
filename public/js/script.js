@@ -1,14 +1,35 @@
 
-function doPost(form) {
-	var ajax = new XMLHttpRequest();
-	ajax.open('POST', '/addPost', true);
+async function doPost(event) {
+	event.preventDefault();
+	const formData = new FormData(event.target);
+	document.getElementById('postSubmit').setAttribute("disabled", "disabled")
 
-	ajax.onreadystatechange = function () {
-		if (this.readyState == 4 && this.status == 200) {
-			var response = JSON.parse(this.responseText);
+	const fileInput = document.querySelector('#imgFile')
+	const file = fileInput.files[0];
+	var base64String = ""
+	if (file !== undefined) {
 
-			alert(response.message);
+		const reader = new FileReader();
+		reader.readAsBinaryString(file);
+		base64String = await new Promise((resolve) => {
+			reader.addEventListener('load', () => {
+				resolve(btoa(reader.result));
+			});
+		});
 
+		formData.append('base64String', base64String)
+		formData.append('fileType', file.type)
+
+	}
+	const formValues = Object.fromEntries(formData.entries());
+	console.log(formValues)
+
+	$.ajax({
+		url: `${baseURL}/addPost`,
+		method: 'POST',
+		data: JSON.stringify(formValues),
+		contentType: 'application/json',
+		success: function (response) {
 			if (response.status == "success") {
 				document.getElementById('form-add-post').getElementsByClassName("input[name='files']").value = "";
 				// document.getElementById('form-add-post').querySelector("input[name='video']").value = "";
@@ -20,12 +41,13 @@ function doPost(form) {
 				document.getElementById('sharePostPreview').style.display = "none";
 				location.reload()
 			}
+		},
+		error: function (error) {
+			alert("Sorry some error occured please try again later")
 		}
-	}
-	var formData = new FormData(form);
-	ajax.send(formData);
-	return true;
+	});
 }
+
 function previewPostImage(self) {
 	var file = self.files;
 	if (file.length > 0) {
@@ -58,7 +80,7 @@ function editPost(self) {
 	var _id = self.getAttribute("data-id");
 	document.getElementById('postId').value = _id
 	var caption = document.querySelector('.description').innerText
-	document.getElementById("caption").value = captionins
+	document.getElementById("caption").value = caption
 }
 
 function deletePost(self) {
@@ -69,7 +91,7 @@ function deletePost(self) {
 		const data = { _id: _id };
 
 		$.ajax({
-			url: '/user/deletePost',
+			url: `${baseURL}/user/deletePost`,
 			method: 'POST',
 			data: JSON.stringify(data),
 			contentType: 'application/json',
@@ -311,46 +333,46 @@ function toggleFriendRequest2(self) {		// different function
 	});
 }
 
-function doAccept(self){
+function doAccept(self) {
 	var _id = self.getAttribute('data-id')
 	const data = { _id }
 
 	$.ajax({
-		 url:`${baseURL}/friends/acceptRequest`,
-		 method:'POST',
-		 data: JSON.stringify(data),
-		 contentType:'application/json',
-		 success:function(response){
-			 if(response.status == "Accepted"){
-				 self.remove()
-				 document.querySelector('.btn-unfriend').remove()
-			 }
-			 if(response.status == "error"){
-				 alert(response.message)
-			 }
-		 }
+		url: `${baseURL}/friends/acceptRequest`,
+		method: 'POST',
+		data: JSON.stringify(data),
+		contentType: 'application/json',
+		success: function (response) {
+			if (response.status == "Accepted") {
+				self.remove()
+				document.querySelector('.btn-unfriend').remove()
+			}
+			if (response.status == "error") {
+				alert(response.message)
+			}
+		}
 	})
- }
+}
 
- function rejectFriendRequest(self){
-	 var _id = self.getAttribute('data-id')
-	 const data = { _id }
+function rejectFriendRequest(self) {
+	var _id = self.getAttribute('data-id')
+	const data = { _id }
 
 	$.ajax({
-		 url:`${baseURL}/friends/rejectRequest`,
-		 method:'POST',
-		 data: JSON.stringify(data),
-		 contentType:'application/json',
-		 success:function(response){
-			 if(response.status == "Rejected"){
-				 self.remove()
-				 
-			 }
-		 }
-	})
- }
+		url: `${baseURL}/friends/rejectRequest`,
+		method: 'POST',
+		data: JSON.stringify(data),
+		contentType: 'application/json',
+		success: function (response) {
+			if (response.status == "Rejected") {
+				self.remove()
 
- function rejectRequestJoinGroup(self) {
+			}
+		}
+	})
+}
+
+function rejectRequestJoinGroup(self) {
 	const group_id = self.getAttribute('data-groupId')
 	const sender_id = self.getAttribute('data-userId')
 

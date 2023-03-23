@@ -2,7 +2,7 @@
 
     <section>
         <div class="feature-photo">
-            <form action="/settings/uploadCoverPhoto/<%= user._id %>" method="post" id="form-cover-photo"
+            <form id="form-cover-photo"
                 class="edit-photo" enctype="multipart/form-data">
                 <label class="fileContainer">
                     Edit cover photo
@@ -13,7 +13,7 @@
             </form>
             <figure>
                 <img style="width:100%; height:700px; object-fit:cover;" class="cover-photo" id="cover-photo"
-                    src="/settings/image/<%=user.coverPhoto%>" alt="public">
+                    src="<%=user.coverPhoto%>" alt="public">
             </figure>
 
             <div class="container-fluid">
@@ -21,10 +21,10 @@
                     <div class="col-md-2">
                         <div class="user-avatar">
                             <figure>
-                                <img class="profile-image" src="/settings/image/<%=user.profilePhoto%>"
+                                <img class="profile-image" src="<%=user.profilePhoto%>"
                                     id="profile-image" style="width: 100%; height:150px;object-fit:cover;"></img>
-                                <form action="/settings/uploadProfileImg/<%= user._id %>" method="post"
-                                    id="form-upload-image" class="edit-photo" enctype="multipart/form-data">
+                                <form id="form-upload-image" class="edit-photo"
+                                    enctype="multipart/form-data">
 
                                     <label class="fileContainer">
                                         Edit
@@ -49,18 +49,113 @@
             </div>
         </div>
     </section>
+    
 
     <script>
         const coverPicInput = document.getElementById('coverPicInput');
-        coverPicInput.addEventListener('change', () => {
-            document.getElementById('form-cover-photo').submit()
-        })
-        const profilePicInput = document.getElementById('profilePicInput')
-        profilePicInput.addEventListener('change', () => {
-            document.getElementById('form-upload-image').submit()
-        })
-    </script>
+        coverPicInput.addEventListener('change', async(event) => {
+            event.preventDefault()
+            
+           
+            const fileInput = document.querySelector('#coverPicInput')
+            const file = fileInput.files[0];
+            console.log(file)
+            const formData = new FormData();
+            
+            var base64String = ""
+            if (file !== undefined) {
 
+                const reader = new FileReader();
+                reader.readAsBinaryString(file);
+                base64String = await new Promise((resolve) => {
+                    reader.addEventListener('load', () => {
+                        resolve(btoa(reader.result));
+                    });
+                });
+
+                formData.append('base64String', base64String)
+                formData.append('fileType', file.type)
+            }
+            const formValues = Object.fromEntries(formData.entries());
+            console.log(formValues)
+
+            $.ajax({
+                url: `${baseURL}/settings/uploadCoverPhoto`,
+                method: 'POST',
+                data: JSON.stringify(formValues),
+                contentType: 'application/json',
+                success: function (response) {
+                    if(response.status === "error")
+                        alert(response.message)
+                    location.reload()
+                },
+                error: function (error) {
+                    alert("Sorry some error occured please try again later")
+                    location.reload()
+                }
+            });
+        })
+ 
+
+        const profilePicInput = document.getElementById('profilePicInput')
+        profilePicInput.addEventListener('change', async(event) => {
+            event.preventDefault()
+            
+            const fileInput = document.querySelector('#profilePicInput')
+            const file = fileInput.files[0];
+            console.log(file)
+            const formData = new FormData();
+           
+            var base64String = ""
+            if (file !== undefined) {
+
+                const reader = new FileReader();
+                reader.readAsBinaryString(file);
+                base64String = await new Promise((resolve) => {
+                    reader.addEventListener('load', () => {
+                        resolve(btoa(reader.result));
+                    });
+                });
+
+                formData.append('base64String', base64String)
+                formData.append('fileType', file.type)
+            }
+            const formValues = Object.fromEntries(formData.entries());
+            console.log(formValues)
+
+            $.ajax({
+                url: `${baseURL}/settings/uploadProfileImg`,
+                method: 'POST',
+                data: JSON.stringify(formValues),
+                contentType: 'application/json',
+                success: function (response) {
+                    if(response.status === "error")
+                        alert(response.message)
+                    location.reload()
+                },
+                error: function (error) {
+                    alert("Sorry some error occured please try again later")
+                    location.reload()
+                }
+            });
+        })
+
+
+       
+        
+    </script>
+    <!-- $.ajax({
+        url: `${baseURL}/settings/uploadProfileImg/${userId}`,
+        method: 'POST',
+        data: JSON.stringify(formValues),
+        contentType: 'application/json',
+        success: function (response) {
+            location.reload()
+        },
+        error: function (error) {
+            alert("Sorry some error occured please try again later")
+        }
+    }); -->
     <section>
         <div class="gap gray-bg">
             <div class="container-fluid">
@@ -78,34 +173,37 @@
                                         </h5>
                                         <form action="/settings/updateInfo/<%= user._id %>" method="post">
                                             <div class="form-group">
-                                                <input type="text" class="name" name="name" value="<%= user.name %>"/>
+                                                <input type="text" class="name" name="name" value="<%= user.name %>" />
                                                 <label class="control-label">Full Name</label>
                                                 <i class="mtrl-select"></i>
                                             </div>
                                             <br><br>
                                             <div class="form-group">
-                                                <input type="email" class="email" name="email"value="<%= user.email %>" />
+                                                <input type="email" class="email" name="email"
+                                                    value="<%= user.email %>" />
                                                 <label class="control-label">Email</label>
                                                 <i class="mtrl-select"></i>
                                             </div>
                                             <br><br>
                                             <div class="form-group">
-                                                <input type="text" class="dob" name="dob" value="<%= user.dob %>"/>
+                                                <input type="text" class="dob" name="dob" value="<%= user.dob %>" />
                                                 <label class="control-label">Date of Birth (DD/MM/YYYY)</label>
                                                 <i class="mtrl-select"></i>
                                             </div>
                                             <div class="form-group">
-                                                <input type="text" class="city" name="city" value="<%= user.city %>"/>
+                                                <input type="text" class="city" name="city" value="<%= user.city %>" />
                                                 <label class="control-label">City</label>
                                                 <i class="mtrl-select"></i>
                                             </div>
                                             <div class="form-group">
-                                                <input type="text" class="country" name="country" value="<%= user.country %>"/>
+                                                <input type="text" class="country" name="country"
+                                                    value="<%= user.country %>" />
                                                 <label class="control-label">Country</label>
                                                 <i class="mtrl-select"></i>
                                             </div>
                                             <div class="form-group">
-                                                <textarea type="text" class="aboutMe" name="aboutMe"><%= user.aboutMe %></textarea>
+                                                <textarea type="text" class="aboutMe"
+                                                    name="aboutMe"><%= user.aboutMe %></textarea>
                                                 <label class="control-label">About Me</label>
                                                 <i class="mtrl-select"></i>
                                             </div>

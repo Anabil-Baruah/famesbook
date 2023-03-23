@@ -4,52 +4,12 @@ const user = require('../models/users')
 const post = require('../models/posts')
 const { auth } = require('../auth')
 const { baseURL } = require('../auth')
-const path = require('path');
-const crypto = require('crypto');
-const { GridFsStorage } = require('multer-gridfs-storage');
-// const methodOverride = require('method-override');
-const Grid = require('gridfs-stream');
+
 require('dotenv').config()
-const multer = require('multer');
-const mongodb = require('mongodb');
+
 const { formatDate } = require('../formatDate')
 
-let gfs, gridfsBucket;
 
-const conn = mongoose.createConnection(process.env.MONGO_URL_FILE_UPLOADS)
-
-conn.once('open', () => {
-    gridfsBucket = new mongoose.mongo.GridFSBucket(conn.db, {
-        bucketName: 'uploads'
-    });
-    gfs = Grid(conn.db, mongoose.mongo);
-    gfs.collection('uploads');
-})
-
-//create storage engine
-const storage = new GridFsStorage({
-    url: 'mongodb://localhost:27017/File_uploads',
-    file: (req, file) => {
-        return new Promise((resolve, rejects) => {
-            crypto.randomBytes(16, (err, buf) => {
-                if (err)
-                    return rejects(err)
-
-                const filename = buf.toString('hex') + path.extname(file.originalname);
-
-                const fileInfo = {
-                    filename,
-                    bucketName: 'uploads'  //bucket name should mathch the collection name
-                };
-                console.log(file);
-                resolve(fileInfo)
-                req.filename = filename,
-                    req.contentType = file.mimetype
-            })
-        })
-    }
-});
-const upload = multer({ storage });
 
 router.route('/')
     .get(auth, async (req, res) => {
@@ -165,7 +125,7 @@ router.route('/updatePost')
                     //     "status": "success",
                     //     "message": "post has been updated"
                     // })
-                    res.redirect('/user')
+                    res.redirect(`${baseURL}/user`)
                 })
             } else {
                 res.json({

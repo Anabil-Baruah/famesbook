@@ -3,7 +3,7 @@
         <div class="feature-photo">
             <figure style="margin:1rem; padding:1rem;" id="figure">
                 <img style="width:100%; height:700px; object-fit:cover;" class="cover-photo" id="cover-photo"
-                    src="/image/<%= user.coverPhoto %>" alt="no photo uploaded">
+                    src="<%= user.coverPhoto %>" alt="no photo uploaded">
             </figure>
             <% if(!isOwner){%>
             <div class="add-btn">
@@ -35,7 +35,7 @@
                     <div class="col-md-2">
                         <div class="user-avatar">
                             <figure>
-                                <img class="profile-image" id="profile-image" src="/image/<%= user.profilePhoto %>"
+                                <img class="profile-image" id="profile-image" src="<%= user.profilePhoto %>"
                                     style="width: 100%; height:150px;object-fit:cover;" alt="No photo uploaded">
                             </figure>
                         </div>

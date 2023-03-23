@@ -1,92 +1,95 @@
 <%- include('includes/header')%>
 
-<div class="gap gray-bg">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="row" id="page-contents">
+    <div class="gap gray-bg">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row" id="page-contents">
 
-                    <div class="col-md-3">
-                        <%- include("includes/left-slidebar") %>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="central-meta">
-                            <div class="editing-info">
-                                <div class="offset-md-3 col-md-6">
-                                    <div class="timeline-info">
-                                        <ul class="nav nav-tabs">
-                                            <li>
-                                                <a href="#page" data-toggle="tab" class=" active btn btn-light"
-                                                    style="margin-right: 4rem;
+                        <div class="col-md-3">
+                            <%- include("includes/left-slidebar") %>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="central-meta">
+                                <div class="editing-info">
+                                    <div class="offset-md-3 col-md-6">
+                                        <div class="timeline-info">
+                                            <ul class="nav nav-tabs">
+                                                <li>
+                                                    <a href="#page" data-toggle="tab" class=" active btn btn-light"
+                                                        style="margin-right: 4rem;
                                                     margin: 9px 75px 5px -30px;">Create Page</a>
-                                                <a href="#group" data-toggle="tab" class="btn btn-light"
-                                                    style="margin-right: 4rem;margin: 9px 75px 5px -30px;">Create Group</a>
-                                            </li>
-                                        </ul>
+                                                    <a href="#group" data-toggle="tab" class="btn btn-light"
+                                                        style="margin-right: 4rem;margin: 9px 75px 5px -30px;">Create
+                                                        Group</a>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="central-meta">
-                            <div class="frnds">
-                                <div class="tab-content">
-                                    <div class="tab-pane active fade show" id="page">
-                                        <ul class="nearby-contct" id="search-results">
-                                            <form action="/create/createPage" method="post" enctype="multipart/form-data">
-                                                <div class="form-group" >
-                                                    <label>Cover Photo</label>
-                                                    <input type="file" name="coverPhoto" accept="image/*" >
-                                                    <i class="mtrl-select"></i>
-                                                    <br><br>
-                                                </div>
-                                                <div class="form-group">
-                                                    <input type="text" name="name" >
-                                                    <label class="control-label">Page Name</label>
-                                                    <i class="mtrl-select"></i>
-                                                    <br><br>
-                                                </div>
-                                                <div class="form-group">
-                                                    <input type="text" name="domainName" >
-                                                    <label class="control-label">www.yourDomain.com</label>
-                                                    <i class="mtrl-select"></i>
-                                                    <br><br>
-                                                </div>
-                                                <div class="form-group">
-                                                    <textarea rows="4" name="additionalInfo"></textarea>
-                                                    <label class="control-label">Additional Info</label>
-                                                    <i class="mtrl-select"></i>
-                                                </div>
-                                                <button class="mtr-btn" name="submit" type="submit">
-                                                    <span>Save</span>
-                                                </button>
-                                            </form>
-                                        </ul>
-                                    </div>
-                                    <div class="tab-pane active fade" id="group">
-                                        <ul class="nearby-contct" id="search-result-pages">
-                                            <form action="/create/createGroup" method="post" enctype="multipart/form-data">
-                                                <div class="form-group">
-                                                    <label>Cover Photo</label>
-                                                    <input type="file" name="coverPhoto" accept="image/*" required>
-                                                    <i class="mtrl-select"></i>
-                                                </div>
+                            <div class="central-meta">
+                                <div class="frnds">
+                                    <div class="tab-content">
+                                        <div class="tab-pane active fade show" id="page">
+                                            <ul class="nearby-contct" id="search-results">
+                                                <form onsubmit="createPage(event)" enctype="multipart/form-data">
+                                                    <div class="form-group">
+                                                        <label>Cover Photo</label>
+                                                        <input type="file" id="imgFilePage" name="coverPhoto"
+                                                            accept="image/*">
+                                                        <i class="mtrl-select"></i>
+                                                        <br><br>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <input type="text" name="name">
+                                                        <label class="control-label">Page Name</label>
+                                                        <i class="mtrl-select"></i>
+                                                        <br><br>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <input type="text" name="domainName">
+                                                        <label class="control-label">www.yourDomain.com</label>
+                                                        <i class="mtrl-select"></i>
+                                                        <br><br>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <textarea rows="4" name="additionalInfo"></textarea>
+                                                        <label class="control-label">Additional Info</label>
+                                                        <i class="mtrl-select"></i>
+                                                    </div>
+                                                    <button class="mtr-btn" name="submit" type="submit">
+                                                        <span>Save</span>
+                                                    </button>
+                                                </form>
+                                            </ul>
+                                        </div>
+                                        <div class="tab-pane active fade" id="group">
+                                            <ul class="nearby-contct" id="search-result-pages">
+                                                <form onsubmit="createGroup(event)" enctype="multipart/form-data">
+                                                    <div class="form-group">
+                                                        <label>Cover Photo</label>
+                                                        <input type="file" name="coverPhoto" id="imgFileGrp" accept="image/*" required>
+                                                        <i class="mtrl-select"></i>
+                                                    </div>
 
-                                                <div class="form-group">
-                                                    <input type="text" name="name" required>
-                                                    <label class="control-label">Group Name</label>
-                                                    <i class="mtrl-select"></i>
-                                                </div>
+                                                    <div class="form-group">
+                                                        <input type="text" name="name" required>
+                                                        <label class="control-label">Group Name</label>
+                                                        <i class="mtrl-select"></i>
+                                                    </div>
 
-                                                <div class="form-group">
-                                                    <textarea name="additionalInfo" rows="4"></textarea>
-                                                    <label class="control-label">Additional Info</label>
-                                                    <i class="mtrl-select"></i>
-                                                </div>
+                                                    <div class="form-group">
+                                                        <textarea name="additionalInfo" rows="4"></textarea>
+                                                        <label class="control-label">Additional Info</label>
+                                                        <i class="mtrl-select"></i>
+                                                    </div>
 
-                                                <button type="submit" class="mtr-btn" name="submit">
-                                                    <span>Save</span></button>
-                                            </form>
-                                        </ul>
+                                                    <button type="submit" class="mtr-btn" name="submit">
+                                                        <span>Save</span></button>
+                                                </form>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -96,5 +99,84 @@
             </div>
         </div>
     </div>
-</div>
-<%- include('includes/footer')%>
+
+    <script>
+
+        async function createGroup(event) {
+            event.preventDefault()
+            const formData = new FormData(event.target);
+
+
+            const fileInput = document.querySelector('#imgFileGrp')
+            const file = fileInput.files[0];
+            var base64String = ""
+            if (file !== undefined) {
+
+                const reader = new FileReader();
+                reader.readAsBinaryString(file);
+                base64String = await new Promise((resolve) => {
+                    reader.addEventListener('load', () => {
+                        resolve(btoa(reader.result));
+                    });
+                });
+
+                formData.append('base64String', base64String)
+                formData.append('fileType', file.type)
+            }
+            const formValues = Object.fromEntries(formData.entries());
+            console.log(formValues)
+
+            $.ajax({
+                url: `${baseURL}/create/createGroup`,
+                method: 'POST',
+                data: JSON.stringify(formValues),
+                contentType: 'application/json',
+                success: function (response) {
+                    location.reload()
+                },
+                error: function (error) {
+                    alert("Sorry some error occured please try again later")
+                }
+            });
+        }
+
+
+        async function createPage(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+
+
+            const fileInput = document.querySelector('#imgFilePage')
+            const file = fileInput.files[0];
+            var base64String = ""
+            if (file !== undefined) {
+
+                const reader = new FileReader();
+                reader.readAsBinaryString(file);
+                base64String = await new Promise((resolve) => {
+                    reader.addEventListener('load', () => {
+                        resolve(btoa(reader.result));
+                    });
+                });
+
+                formData.append('base64String', base64String)
+                formData.append('fileType', file.type)
+            }
+            const formValues = Object.fromEntries(formData.entries());
+            console.log(formValues)
+
+            $.ajax({
+                url: `${baseURL}/create/createPage`,
+                method: 'POST',
+                data: JSON.stringify(formValues),
+                contentType: 'application/json',
+                success: function (response) {
+                    location.reload()
+                },
+                error: function (error) {
+                    alert("Sorry some error occured please try again later")
+                }
+            });
+        }
+    </script>
+    <%- include('includes/footer')%>

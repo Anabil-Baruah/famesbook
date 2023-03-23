@@ -15,10 +15,10 @@
                                         <div class="new-position">
                                             <figure>
                                                 <img style="width:60px;height:60px;"
-                                                    src="/image/<%=user.profilePhoto%>">
+                                                    src="<%=user.profilePhoto%>">
                                             </figure>
                                             <div class="newpst-input">
-                                                <form id="form-add-post" onsubmit="return doPost(this)">
+                                                <form id="form-add-post" onsubmit="doPost(event)">
                                                     <input name="type" type="hidden" value="post">
                                                     <textarea rows="2" name="caption"
                                                         placeholder="write something "></textarea>
@@ -41,7 +41,7 @@
                                                             <li>
                                                                 <i class="fa fa-image"></i>
                                                                 <label class="fileContainer">
-                                                                    <input type="file" name="files" accept="image/*"
+                                                                    <input type="file" id="imgFile" name="files" accept="image/*"
                                                                         onchange="previewPostImage(this);">
                                                                 </label>
                                                             </li>
@@ -53,7 +53,7 @@
                                                                 </label>
                                                             </li>
                                                             <li>
-                                                                <button type="submit">Post</button>
+                                                                <button type="submit" id="postSubmit">Post</button>
                                                             </li>
                                                         </ul>
 
@@ -63,6 +63,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                                 <% if(posts){%>
                                <%- include('includes/posts.ejs', {posts:posts, isOwner:false, baseURL})%>
                                     <%}%>

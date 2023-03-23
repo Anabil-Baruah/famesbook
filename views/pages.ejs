@@ -23,9 +23,9 @@
                                                     <div class="col border rounded my-1">
 
                                                         <div class="card" style="width: 15rem;margin-right:0;">
-                                                            <a href="/pages/<%=page._id%>">
-                                                                <img src=/image/<%=page.coverPhoto %>
-                                                                class="card-img-top" alt="...">
+                                                            <a href="<%= baseURL%>/pages/<%=page._id%>">
+                                                                <img src="<%=page.coverPhoto %>" class="card-img-top"
+                                                                    alt="...">
                                                                 <div class="card-body">
                                                                     <h5 class="card-title text-dark">
                                                                         <%= page.name%>

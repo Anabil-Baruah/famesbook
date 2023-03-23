@@ -5,67 +5,20 @@ const post = require('../models/posts')
 const redis = require('redis')
 const { auth } = require('../auth')
 const { baseURL } = require('../auth')
-const path = require('path');
-const crypto = require('crypto');
-const { GridFsStorage } = require('multer-gridfs-storage');
-// const methodOverride = require('method-override');
-const Grid = require('gridfs-stream');
-const bcrypt = require('bcrypt')
-const multer = require('multer');
+const cloudinary = require('../fileUpload')
 const mongodb = require('mongodb');
 const ObjectId = mongodb.ObjectId
 const { formatDate } = require('../formatDate')
 require('dotenv').config()
-let gfs, gridfsBucket;
 
-const conn = mongoose.createConnection(process.env.MONGO_URL_FILE_UPLOADS)
 
-conn.once('open', () => {
-    gridfsBucket = new mongoose.mongo.GridFSBucket(conn.db, {
-        bucketName: 'uploads'
-    });
-    gfs = Grid(conn.db, mongoose.mongo);
-    gfs.collection('uploads');
-})
 
 //create storage engine
-const storage = new GridFsStorage({
-    url: 'mongodb://localhost:27017/File_uploads',
-    file: (req, file) => {
-        return new Promise((resolve, rejects) => {
-            crypto.randomBytes(16, (err, buf) => {
-                if (err)
-                    return rejects(err)
 
-                const filename = buf.toString('hex') + path.extname(file.originalname);
-
-                const fileInfo = {
-                    filename,
-                    bucketName: 'uploads'  //bucket name should mathch the collection name
-                };
-
-                resolve(fileInfo)
-                req.filename = filename,
-                    req.contentType = file.mimetype
-            })
-        })
-    }
-});
-const upload = multer({ storage });
 
 router.route('/')
     .get(auth, async (req, res) => {
-
-        // user.find({ accessToken: req.accessToken }).exec((err, users) => {
-        //     if (err) {
-        //         res.json({ message: err.message });
-        //     }
-        //     else {
-
-        //         res.render('index', { user: users[0] })
-        //     }
-        // })
-
+        
         const accessToken = req.accessToken
         const userFound = await user.findOne({ accessToken });
         if (userFound) {
@@ -94,9 +47,9 @@ router.route('/')
             // const suggestions = await user.find({ $and: [{ _id: { "$ne": userFound._id } }, { friends: { $not: { $elemMatch: { _id: userFound._id } } } }] })
             // console.log(suggestions)
             const suggestions = await user.aggregate([
-                // Match documents where the _id field is not equal to userFound._id
+
                 { $match: { _id: { $ne: userFound._id } } },
-                // Lookup the friends array and filter out the documents where userFound is already a friend
+
                 {
                     $lookup: {
                         from: "users",
@@ -208,10 +161,12 @@ router.route('/toggleLikePost')
 
 
 router.route('/addPost')
-    .post(auth, upload.array('files'), async (req, res) => {
+    .post(auth, async (req, res) => {
+
         const userFound = await user.findOne({ accessToken: req.accessToken })
         const isSharedPost = req.body.isSharedPost
         const postFound = await post.findOne({ _id: isSharedPost })
+        console.log(isSharedPost, "sharedPost")
         var newPost = {}
         if (isSharedPost !== undefined) {
             newPost = new post({
@@ -227,7 +182,7 @@ router.route('/addPost')
                     _id: postFound._id,
                     caption: postFound.caption,
                     contentType: postFound.contentType,
-                    filename: postFound.filename,
+                    fileURL: postFound.fileURL,
                     type: postFound.type,
                     createdAt: postFound.createdAt,
                     owner: {
@@ -239,35 +194,79 @@ router.route('/addPost')
             })
 
         } else {
-            newPost = new post({
-                caption: req.body.caption,
-                filename: req.filename,
-                contentType: req.contentType,
-                type: req.body.type,
-                createdAt: new Date().getTime(),
-                owner: {
-                    _id: userFound._id,
-                    name: userFound.username,
-                    profileImage: userFound.profilePhoto
-                }
-            })
-        }
 
-        const postUpload = await newPost.save()
-        const updateUserPosts = await user.updateOne({ accessToken: req.accessToken }, {
-            $push: {
-                posts: {
-                    _id: newPost._id
+            if (req.body.fileType !== undefined) {
+                cloudinary.uploader.upload(`data:${req.body.fileType};base64,${req.body.base64String}`, {
+                    resource_type: 'raw',
+                    folder: 'famesbook',
+                    width: 1000,
+                    height: 600
+                    // crop: "scale"
+                }).then(async (result) => {
+                    newPost = new post({
+                        caption: req.body.caption,
+                        contentType: req.body.fileType,
+                        type: req.body.fileType,
+                        fileURL: result.url,
+                        createdAt: new Date().getTime(),
+                        owner: {
+                            _id: userFound._id,
+                            name: userFound.username,
+                            profileImage: userFound.profilePhoto
+                        }
+                    })
+                    console.log(result)
+                    const postUpload = await newPost.save()
+                    const updateUserPosts = await user.updateOne({ accessToken: req.accessToken }, {
+                        $push: {
+                            posts: {
+                                _id: newPost._id
+                            }
+                        }
+                    })
+
+                    if (postUpload && updateUserPosts) {
+                        return res.json({
+                            "status": "success",
+                            "message": "Post has been uploaded"
+                        })
+                    }
+                }).catch(() => {
+                    console.log("error occured")
+                    return res.json({
+                        "status": "error",
+                        "message": "File is too large"
+                    })
+                })
+            } else {
+                newPost = new post({
+                    caption: req.body.caption,
+                    contentType: "text",
+                    type: "text",
+                    createdAt: new Date().getTime(),
+                    owner: {
+                        _id: userFound._id,
+                        name: userFound.username,
+                        profileImage: userFound.profilePhoto
+                    }
+                })
+                const postUpload = await newPost.save()
+                const updateUserPosts = await user.updateOne({ accessToken: req.accessToken }, {
+                    $push: {
+                        posts: {
+                            _id: newPost._id
+                        }
+                    }
+                })
+                if (postUpload && updateUserPosts) {
+                    return res.json({
+                        "status": "success",
+                        "message": "Post has been uploaded"
+                    })
                 }
             }
-        })
-
-        if (postUpload && updateUserPosts) {
-            res.json({
-                "status": "success",
-                "message": "Post has been uploaded"
-            })
         }
+
     })
 
 router.route('/previewSharePost')
@@ -319,44 +318,11 @@ router.route('/addComment')
             }
         })
         if (newComment)
-            res.redirect('/')
+            res.redirect(`${baseURL}`)
 
     })
 
 
-
-router.route('/image/:filename')
-    .get(auth, (req, res) => {
-        gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
-            if (!file || file.length === 0)
-                return res.status(404).json({
-                    err: "No files exist"
-                })
-            //check if image
-            if (file.contentType === 'image/jpeg' || file.contentType === 'image/png') {
-                const readstream = gridfsBucket.openDownloadStreamByName(file.filename);
-                readstream.pipe(res)
-            } else {
-                res.status(404).json({ err: "Not an image" })
-            }
-        })
-    })
-router.route('/video/:filename')
-    .get(auth, (req, res) => {
-        gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
-            if (!file || file.length === 0)
-                return res.status(404).json({
-                    err: "No files exist"
-                })
-            //check if image
-            if (file.contentType === 'video/mp4') {
-                const readstream = gridfsBucket.openDownloadStreamByName(file.filename);
-                readstream.pipe(res)
-            } else {
-                res.status(404).json({ err: "Not an video" })
-            }
-        })
-    })
 
 
 module.exports = router
